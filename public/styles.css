@@ -1,0 +1,83 @@
+html, body {
+  overflow: auto;
+}
+
+.container.search {
+  margin-bottom: 20px;
+}
+
+.container.items {
+  padding-bottom: 55px;
+}
+
+.input.search {
+  width: 100%;
+}
+
+.menu {
+  position: absolute;
+  background: #FFFFFF;
+  box-sizing: border-box;
+  z-index: 999;
+  width: 100%;
+  max-height: 75vh;
+  overflow-y: scroll;
+  padding-left: 10px;
+}
+
+.menu:empty {
+  display: none;
+}
+
+.menu .item {
+  cursor: pointer;
+  padding: 2px;
+}
+
+.menu .item.item-highlighted {
+  font-weight: bold;
+}
+
+.doh-tags {
+  justify-content: center !important;
+}
+
+.selected, .suggestions {
+  display: inline-block;
+}
+
+.selected .card, .suggestions .card {
+  margin: 10px;
+}
+
+.selected .card .card-content, .suggestions .card .card-content {
+  padding: 10px;
+}
+
+.selected .delete, .suggestions .delete {
+  top: 3px;
+}
+
+.suggestions .card img {
+  position: relative;
+  top: 2px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  height: 50px;
+  padding: 0.8em;
+  box-sizing: border-box;
+  width: 100vw;
+}
+
+.tag.is-tiny {
+  font-size: 0.5em;
+}
+
+.suggestions .tag.is-tiny {
+  position: relative;
+  top: -5px;
+  left: -5px;
+}
