@@ -59,10 +59,10 @@ class Index extends React.Component {
   }
 
   componentDidMount () {
-    const selectedItems = JSON.parse(localStorage.getItem(STORAGE_KEYS.selectedItems))
-    const suggestions = JSON.parse(localStorage.getItem(STORAGE_KEYS.suggestions))
-    const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings))
-    const userDOH = JSON.parse(localStorage.getItem(STORAGE_KEYS.userDOH))
+    const selectedItems = JSON.parse(localStorage.getItem(STORAGE_KEYS.selectedItems)) || this.state.selectedItems
+    const suggestions = JSON.parse(localStorage.getItem(STORAGE_KEYS.suggestions)) || this.state.suggestions
+    const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings)) || this.state.settings
+    const userDOH = JSON.parse(localStorage.getItem(STORAGE_KEYS.userDOH)) || this.state.userDOH
     this.setState({ loaded: true, selectedItems, suggestions, settings, userDOH })
   }
 
