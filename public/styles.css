@@ -1,5 +1,38 @@
 html, body {
+  height: 100%;
   overflow: auto;
+}
+
+body.dark, body.dark .tag.is-dark {
+  background-color: #01161E;
+  color: #FFFFFF;
+}
+
+.tag.is-light, .tag.is-dark {
+  cursor: pointer;
+}
+
+body.dark .tag.is-dark {
+  font-weight: bold;
+}
+
+body.light .tag.is-light {
+  font-weight: bold;
+}
+
+body.dark .card, body.dark .footer, body.dark .footer strong, body.dark .menu {
+  background-color: #12355B;
+  color: #FFFFFF;
+}
+
+.mode-setting {
+  position: relative;
+  top: 20px;
+}
+
+.delete.clear-all {
+  position: relative;
+  top: 12px;
 }
 
 .container.search {

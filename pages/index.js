@@ -8,6 +8,13 @@ import Footer from '../components/Footer'
 import DohCheckboxes from '../components/DohCheckboxes'
 import ItemAutocomplete from '../components/ItemAutocomplete'
 
+const STORAGE_KEYS = {
+  selectedItems: 'pocketcraft/selectedItems',
+  suggestions: 'pocketcraft/suggestions',
+  settings: 'pocketcraft/settings',
+  userDOH: 'pocketcraft/userDOH'
+}
+
 class Index extends React.Component {
   constructor (props) {
     super(props)
@@ -16,22 +23,53 @@ class Index extends React.Component {
       items: [],
       selectedItems: [],
       suggestions: [],
-      userDOH: []
+      userDOH: [],
+      loaded: false,
+      settings: {
+        mode: 'light'
+      }
     }
     this.getSuggestions = debounce(this.getSuggestions.bind(this), 100)
     this.setDOH = this.setDOH.bind(this)
     this.autoCompleteOnChange = this.autoCompleteOnChange.bind(this)
     this.autoCompleteOnSelect = this.autoCompleteOnSelect.bind(this)
+    this.autoCompleteUpdate = debounce(this.autoCompleteUpdate.bind(this), 200)
+    this.onChangeMode = this.onChangeMode.bind(this)
+    this.clearAll = this.clearAll.bind(this)
+  }
+
+  componentDidMount () {
+    const selectedItems = JSON.parse(localStorage.getItem(STORAGE_KEYS.selectedItems))
+    const suggestions = JSON.parse(localStorage.getItem(STORAGE_KEYS.suggestions))
+    const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings))
+    const userDOH = JSON.parse(localStorage.getItem(STORAGE_KEYS.userDOH))
+    this.setState({ loaded: true, selectedItems, suggestions, settings, userDOH })
+  }
+
+  static getDerivedStateFromProps (props, state) {
+    if (state.loaded) {
+      ['light', 'dark'].forEach((mode) => document.body.classList.remove(mode))
+      document.body.classList.add(state.settings.mode)
+      localStorage.setItem(STORAGE_KEYS.selectedItems, JSON.stringify(state.selectedItems))
+      localStorage.setItem(STORAGE_KEYS.suggestions, JSON.stringify(state.suggestions))
+      localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings))
+      localStorage.setItem(STORAGE_KEYS.userDOH, JSON.stringify(state.userDOH))
+    }
+    return state
   }
 
   autoCompleteOnChange (event, itemsSearch) {
     this.setState({ itemsSearch })
+    this.autoCompleteUpdate(itemsSearch)
+  }
+
+  autoCompleteUpdate (itemsSearch) {
     axios.get(`/api/items?q=${encodeURIComponent(itemsSearch)}`)
       .then(({ data }) => {
         this.setState({ items: data.filter(({ category_name }) => category_name !== 'Crystal') })
       })
-      .catch(() => {
-        console.log('error')
+      .catch((e) => {
+        console.log('error', e)
       })
   }
 
@@ -70,8 +108,18 @@ class Index extends React.Component {
     this.setState({ userDOH: [ ...dohSet ] }, this.getSuggestions)
   }
 
+  onChangeMode (mode) {
+    return () => {
+      this.setState({ settings: Object.assign({}, this.state.settings, { mode }) })
+    }
+  }
+
+  clearAll () {
+    this.setState({ selectedItems: [] }, this.getSuggestions)
+  }
+
   render () {
-    const { items, itemsSearch, selectedItems, suggestions, userDOH } = this.state
+    const { items, itemsSearch, selectedItems, suggestions, userDOH, settings } = this.state
     const embellishedSuggestions = suggestions.map((suggestion) => {
       suggestion.have = suggestion.tree.filter((item) => selectedItems.some((selected) => selected.id === item.id))
       suggestion.need = suggestion.tree.filter((item) => item.category_name !== 'Crystal')
@@ -80,7 +128,7 @@ class Index extends React.Component {
     }).sort((a, b) => b.completion - a.completion)
     return (
       <div>
-        <Header />
+        <Header mode={settings.mode} onChangeMode={this.onChangeMode} />
         <div className='container search'>
           <Head />
           <ItemAutocomplete
@@ -93,7 +141,7 @@ class Index extends React.Component {
         <div className='container items'>
           <DohCheckboxes onClick={this.setDOH} userDOH={userDOH} />
 
-          <h1 className='is-size-3'>{selectedItems.length} Selected</h1>
+          <h1 className='is-size-3'>{selectedItems.length} Selected <button onClick={this.clearAll} className='delete is-medium clear-all'></button></h1>
           <div className='selected'>{selectedItems.map((item, i) => (
             <ItemCard item={item} key={item._id} showDelete onDelete={this.deleteSelected(i)} type='item' />
           ))}</div>

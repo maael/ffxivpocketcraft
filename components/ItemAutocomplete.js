@@ -14,6 +14,7 @@ export default ({ onSelect, onChange, value, items }) => (
         {children}
       </div>
     )}
+    open
     renderItem={(item, isHighlighted) => (
       <div
         className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
