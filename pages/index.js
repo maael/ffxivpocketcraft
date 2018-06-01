@@ -63,6 +63,10 @@ class Index extends React.Component {
     const suggestions = JSON.parse(localStorage.getItem(STORAGE_KEYS.suggestions)) || this.state.suggestions
     const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings)) || this.state.settings
     const userDOH = JSON.parse(localStorage.getItem(STORAGE_KEYS.userDOH)) || this.state.userDOH
+    if (window.location.search.includes('reset')) {
+      localStorage.clear()
+      return this.setState({ loaded: true })
+    }
     this.setState({ loaded: true, selectedItems, suggestions, settings, userDOH })
   }
 

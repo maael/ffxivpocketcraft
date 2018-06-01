@@ -7,7 +7,7 @@ module.exports = (db) => {
     const { q } = req.query
     let query = {}
     if (q) Object.assign(query, { name: new RegExp(q, 'i') })
-    collection.find(query).stream().pipe(JSONStream.stringify()).pipe(res.type('json'))
+    collection.find(query, { projection: { name: 1, id: 1, category_name: 1 } }).stream().pipe(JSONStream.stringify()).pipe(res.type('json'))
   })
 
   return router
