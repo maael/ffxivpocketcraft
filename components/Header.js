@@ -1,6 +1,6 @@
 export default ({ mode, onChangeMode = () => {} }) => (
   <div className='container'>
-    <h1 className='is-size-1'>FFXIV Pocketcraft
+    <h1 className='is-size-1'><span className='is-hidden-mobile'>FFXIV</span> Pocketcraft
     <div className='mode-setting tags has-addons is-pulled-right'>
       <span className='tag is-light' onClick={onChangeMode('light')}>
           Light {mode === 'light' ? '✔' : ''}
