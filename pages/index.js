@@ -10,7 +10,15 @@ import Footer from '../components/Footer'
 import DohCheckboxes from '../components/DohCheckboxes'
 import ItemAutocomplete from '../components/ItemAutocomplete'
 
-const store = localforage.createInstance({
+const apiStore = localforage.createInstance({
+  driver: [
+    localforage.INDEXEDDB,
+    localforage.LOCALSTORAGE
+  ],
+  name: 'pocketcraftapi'
+})
+
+const localStore = localforage.createInstance({
   driver: [
     localforage.INDEXEDDB,
     localforage.LOCALSTORAGE
@@ -21,7 +29,7 @@ const store = localforage.createInstance({
 const api = setup({
   cache: {
     maxAge: 5 * 60 * 1000,
-    store,
+    store: apiStore,
     exclude: {
       query: false
     }
@@ -59,25 +67,28 @@ class Index extends React.Component {
   }
 
   componentDidMount () {
-    const selectedItems = JSON.parse(localStorage.getItem(STORAGE_KEYS.selectedItems)) || this.state.selectedItems
-    const suggestions = JSON.parse(localStorage.getItem(STORAGE_KEYS.suggestions)) || this.state.suggestions
-    const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings)) || this.state.settings
-    const userDOH = JSON.parse(localStorage.getItem(STORAGE_KEYS.userDOH)) || this.state.userDOH
-    if (window.location.search.includes('reset')) {
-      localStorage.clear()
-      return this.setState({ loaded: true })
-    }
-    this.setState({ loaded: true, selectedItems, suggestions, settings, userDOH })
+    Promise.all(Object.values(STORAGE_KEYS).map((key) => localStore.getItem(key)))
+      .then(([ selectedItems, suggestions, settings, userDOH ]) => {
+        let initialState = { loaded: true }
+        if (window.location.search.includes('reset')) {
+          localStorage.clear()
+        } else {
+          initialState = Object.assign({}, initialState, {
+            selectedItems: selectedItems || this.state.selectedItems,
+            suggestions: suggestions || this.state.suggestions,
+            settings: settings || this.state.settings,
+            userDOH: userDOH || this.state.userDOH
+          })
+        }
+        this.setState(initialState)
+      })
   }
 
   static getDerivedStateFromProps (props, state) {
     if (state.loaded) {
       ['light', 'dark'].forEach((mode) => document.body.classList.remove(mode))
       document.body.classList.add(state.settings.mode)
-      localStorage.setItem(STORAGE_KEYS.selectedItems, JSON.stringify(state.selectedItems))
-      localStorage.setItem(STORAGE_KEYS.suggestions, JSON.stringify(state.suggestions))
-      localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings))
-      localStorage.setItem(STORAGE_KEYS.userDOH, JSON.stringify(state.userDOH))
+      Object.entries(STORAGE_KEYS).forEach(([key, value]) => localStore.setItem(value, state[key]))
     }
     return state
   }
