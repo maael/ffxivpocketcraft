@@ -25,6 +25,18 @@ body.dark .card, body.dark .footer, body.dark .footer strong, body.dark .menu {
   color: #FFFFFF;
 }
 
+body.dark .input,
+body.dark input::placeholder,
+body.dark .doh-tags .tags .tag:first-child {
+  background-color: #194A7F;
+  border: none;
+  color: #DCDCDC;
+}
+
+body.dark .doh-tags .tags .tag:last-child {
+  background-color: #DCDCDC;
+}
+
 .mode-setting {
   position: relative;
   top: 20px;
