@@ -1,3 +1,4 @@
+import qs from 'querystring'
 import React from 'react'
 import getConfig from 'next/config'
 import axios from 'axios'
@@ -5,12 +6,14 @@ import localforage from 'localforage'
 import { setup } from 'axios-cache-adapter'
 import debounce from 'lodash.debounce'
 import ReactGA from 'react-ga'
+import { FaFilter } from 'react-icons/fa'
 import ItemCard from '../components/ItemCard'
 import Header from '../components/Header'
 import Head from '../components/Head'
 import Footer from '../components/Footer'
 import DohCheckboxes from '../components/DohCheckboxes'
 import ItemAutocomplete from '../components/ItemAutocomplete'
+import Filter from '../components/RecipeFilter'
 
 const { publicRuntimeConfig: config } = getConfig()
 
@@ -46,7 +49,9 @@ const STORAGE_KEYS = {
   selectedItems: 'pocketcraft/selectedItems',
   suggestions: 'pocketcraft/suggestions',
   settings: 'pocketcraft/settings',
-  userDOH: 'pocketcraft/userDOH'
+  userDOH: 'pocketcraft/userDOH',
+  recipeFilter: 'pocketcraft/recipeFilter',
+  openFilter: 'pocketcraft/openFilter'
 }
 
 class Index extends React.Component {
@@ -61,7 +66,14 @@ class Index extends React.Component {
       loaded: false,
       settings: {
         mode: 'light'
-      }
+      },
+      recipeFilter: {
+        ilvl: '',
+        clvl: '',
+        quickSynth: false,
+        canHQ: false
+      },
+      openFilter: false
     }
     this.getSuggestions = debounce(this.getSuggestions.bind(this), 100)
     this.setDOH = this.setDOH.bind(this)
@@ -70,12 +82,14 @@ class Index extends React.Component {
     this.autoCompleteUpdate = debounce(this.autoCompleteUpdate.bind(this), 200)
     this.onChangeMode = this.onChangeMode.bind(this)
     this.clearAll = this.clearAll.bind(this)
+    this.toggleRecipeFilter = this.toggleRecipeFilter.bind(this)
+    this.updateRecipeFilter = this.updateRecipeFilter.bind(this)
   }
 
   componentDidMount () {
     if (config.gaTrackingID) ReactGA.pageview(window.location.pathname + window.location.search);
     Promise.all(Object.values(STORAGE_KEYS).map((key) => localStore.getItem(key)))
-      .then(([ selectedItems, suggestions, settings, userDOH ]) => {
+      .then(([ selectedItems, suggestions, settings, userDOH, recipeFilter, openFilter ]) => {
         let initialState = { loaded: true }
         if (window.location.search.includes('reset')) {
           localStorage.clear()
@@ -84,7 +98,9 @@ class Index extends React.Component {
             selectedItems: selectedItems || this.state.selectedItems,
             suggestions: suggestions || this.state.suggestions,
             settings: settings || this.state.settings,
-            userDOH: userDOH || this.state.userDOH
+            userDOH: userDOH || this.state.userDOH,
+            recipeFilter: recipeFilter || this.state.recipeFilter,
+            openFilter: openFilter || this.state.openFilter
           })
         }
         this.setState(initialState)
@@ -122,11 +138,12 @@ class Index extends React.Component {
   }
 
   getSuggestions () {
-    const { selectedItems, userDOH } = this.state
+    const { selectedItems, userDOH, recipeFilter } = this.state
     const items = selectedItems.map(({ id }) => id).join(',')
     const dohs = userDOH.join(',')
+    const filters = encodeURIComponent(qs.stringify(recipeFilter))
     if (!items) return this.setState({ suggestions: [] })
-    api.get(`/api/recipes?items=${items}&classes=${dohs}`)
+    api.get(`/api/recipes?items=${items}&classes=${dohs}&filter=${filters}`)
       .then(({ data }) => {
         this.setState({ suggestions: data }, () => {
           XIVDBTooltips.get()
@@ -160,8 +177,16 @@ class Index extends React.Component {
     this.setState({ selectedItems: [] }, this.getSuggestions)
   }
 
+  toggleRecipeFilter () {
+    this.setState({ openFilter: !this.state.openFilter })
+  }
+
+  updateRecipeFilter (field, state) {
+    this.setState({ recipeFilter: Object.assign({}, this.state.recipeFilter, { [field]: state }) }, this.getSuggestions)
+  }
+
   render () {
-    const { items, itemsSearch, selectedItems, suggestions, userDOH, settings } = this.state
+    const { items, itemsSearch, selectedItems, suggestions, userDOH, settings, recipeFilter, openFilter } = this.state
     const embellishedSuggestions = suggestions.map((suggestion) => {
       suggestion.have = suggestion.tree.filter((item) => selectedItems.some((selected) => selected.id === item.id))
       suggestion.need = suggestion.tree.filter((item) => item.category_name !== 'Crystal')
@@ -181,6 +206,8 @@ class Index extends React.Component {
           />
         </div>
         <div className='container items'>
+          <span className='icon is-large recipe-filter' onClick={this.toggleRecipeFilter} title='Filters'><FaFilter size='2em' /></span>
+          <Filter open={openFilter} filter={recipeFilter} onChange={this.updateRecipeFilter} />
           <DohCheckboxes onClick={this.setDOH} userDOH={userDOH} />
 
           <h1 className='is-size-3'>{selectedItems.length} Selected <button onClick={this.clearAll} className='delete is-medium clear-all'></button></h1>

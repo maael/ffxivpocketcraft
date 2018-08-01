@@ -27,14 +27,37 @@ body.dark .card, body.dark .footer, body.dark .footer strong, body.dark .menu {
 
 body.dark .input,
 body.dark input::placeholder,
-body.dark .doh-tags .tags .tag:first-child {
-  background-color: #194A7F;
+body.dark .doh-tags .tags .tag:first-child,
+body.dark .filter-tags .tags .tag:first-child {
+  background-color: #12355B;
   border: none;
   color: #DCDCDC;
 }
 
-body.dark .doh-tags .tags .tag:last-child {
-  background-color: #DCDCDC;
+body.dark .doh-tags .tags .tag:last-child,
+body.dark .filter-tags .tags .tag:last-child {
+  background-color: #194A7F;
+}
+
+body.light .filter-tags .tags .tag.number-tag,
+body.light .filter-tags .tags .tag.number-tag input,
+body.light .filter-tags .tags .tag.number-tag input::placeholder {
+  background-color: #F5F5F5;
+}
+
+body.dark .filter-tags .tags .tag.number-tag,
+body.dark .filter-tags .tags .tag.number-tag input,
+body.dark .filter-tags .tags .tag.number-tag input::placeholder {
+  background-color: #194A7F;
+  color: #FFFFFF;
+}
+
+.filter-tags .tags .tag.number-tag input {
+  text-align: center;
+}
+
+.filter-tags .tags .tag.number-tag input::placeholder {
+  opacity: 0.6;
 }
 
 .mode-setting {
@@ -83,8 +106,23 @@ body.dark .doh-tags .tags .tag:last-child {
   font-weight: bold;
 }
 
-.doh-tags {
+.filter-tags, .doh-tags {
   justify-content: center !important;
+}
+
+.filter-tags .number-tag {
+  position: relative;
+  overflow: hidden;
+  width: 75px;
+}
+
+.filter-tags input[type=number] {
+  border: none;
+  padding: 0.25em 0.75em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 .selected, .suggestions {
@@ -125,4 +163,10 @@ body.dark .doh-tags .tags .tag:last-child {
   position: relative;
   top: -5px;
   left: -5px;
+}
+
+.recipe-filter {
+  cursor: pointer;
+  float: right;
+  user-select: none;
 }
