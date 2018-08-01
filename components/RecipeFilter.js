@@ -13,7 +13,7 @@ export default ({ open, filter, onChange }) => {
         <div className='control'>
           <div className='tags has-addons'>
             <span className='tag is-info'>
-                Item Level
+                Max Item Level
             </span>
             <span className='tag number-tag'>
                 <input type='number' placeholder='???' value={filter.ilvl} onChange={wrappedOnChange('ilvl')} />
@@ -23,7 +23,7 @@ export default ({ open, filter, onChange }) => {
         <div className='control'>
           <div className='tags has-addons'>
             <span className='tag is-info'>
-                Class Level
+                Max Class Level
             </span>
             <span className='tag number-tag'>
                 <input type='number' placeholder='???' value={filter.clvl} onChange={wrappedOnChange('clvl')} />
