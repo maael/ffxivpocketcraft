@@ -7,9 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "extract-items": "node scripts/extract-items-from-local-recipes",
     "import-recipes": "node scripts/import-recipes-from-xivdb",
-    "dev": "NODE_ENV=development node server",
-    "start": "NODE_ENV=production node server",
-    "build": "NODE_ENV=production next build",
+    "dev": "cross-env NODE_ENV=development node server",
+    "start": "cross-env NODE_ENV=production node server",
+    "build": "cross-env NODE_ENV=production next build",
     "db-dump": "mongodump --db pocketcraft",
     "db-restore": "mongorestore --drop -d pocketcraft"
   },
@@ -33,6 +33,10 @@
     "next": "^6.0.3",
     "react": "^16.4.0",
     "react-autocomplete": "^1.8.1",
-    "react-dom": "^16.4.0"
+    "react-dom": "^16.4.0",
+    "react-ga": "^2.5.3"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0"
   }
 }

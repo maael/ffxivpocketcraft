@@ -1,14 +1,20 @@
 import React from 'react'
+import getConfig from 'next/config'
 import axios from 'axios'
 import localforage from 'localforage'
 import { setup } from 'axios-cache-adapter'
 import debounce from 'lodash.debounce'
+import ReactGA from 'react-ga'
 import ItemCard from '../components/ItemCard'
 import Header from '../components/Header'
 import Head from '../components/Head'
 import Footer from '../components/Footer'
 import DohCheckboxes from '../components/DohCheckboxes'
 import ItemAutocomplete from '../components/ItemAutocomplete'
+
+const { publicRuntimeConfig: config } = getConfig()
+
+if (config.gaTrackingID) ReactGA.initialize(config.gaTrackingID);
 
 const apiStore = localforage.createInstance({
   driver: [
@@ -67,6 +73,7 @@ class Index extends React.Component {
   }
 
   componentDidMount () {
+    if (config.gaTrackingID) ReactGA.pageview(window.location.pathname + window.location.search);
     Promise.all(Object.values(STORAGE_KEYS).map((key) => localStore.getItem(key)))
       .then(([ selectedItems, suggestions, settings, userDOH ]) => {
         let initialState = { loaded: true }

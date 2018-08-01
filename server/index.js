@@ -8,6 +8,8 @@ const api = require('./api')
 const fakePublic = require('./fake-public')
 
 MongoClient.connect(MONGO_URI, function(err, client) {
+  if (err) throw err
+  if (!client) throw new Error(`Could not connect to mongodb ${MONGO_URI}`)
   const db = client.db(MONGO_DB)
   next.prepare().then(() => {
     const server = express()
