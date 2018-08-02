@@ -223,7 +223,12 @@ class Index extends React.Component {
         </div>
         <div className='container items'>
           <span className='icon is-large recipe-filter' onClick={this.toggleRecipeFilter} title='Filters'><FaFilter size='2em' /></span>
-          <Settings settings={settings} save={this.saveSettings} onClearClassLevels={this.clearClassLevels} />
+          <Settings
+            settings={settings}
+            save={this.saveSettings}
+            onClearClassLevels={this.clearClassLevels}
+            onChangeMode={this.onChangeMode}
+          />
           <Filter open={openFilter} filter={recipeFilter} onChange={this.updateRecipeFilter} />
           <div>
             {!settings.classLevels ? null : <LodestoneLevels classLevels={settings.classLevels} isDark={isDark} onClear={this.clearClassLevels} /> }

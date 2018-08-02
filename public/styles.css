@@ -66,6 +66,10 @@ body.dark .filter-tags .tags .tag.number-tag input::placeholder {
 
 .mode-setting {
   position: relative;
+  top: 5px;
+}
+
+.mode-setting.is-top {
   top: 20px;
 }
 

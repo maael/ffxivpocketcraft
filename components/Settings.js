@@ -2,6 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import { FaWrench } from 'react-icons/fa'
 import LoadstoneLoader from './LodestoneLoader'
+import ModeSettings from './parts/ModeSettings'
 
 Modal.setAppElement('#__next')
 
@@ -27,7 +28,7 @@ export default class Settings extends React.Component {
   }
 
   render () {
-    const { settings, onClearClassLevels } = this.props
+    const { settings, onClearClassLevels, onChangeMode } = this.props
     const { open } = this.state
     const isDark = settings.mode === 'dark'
 
@@ -52,6 +53,8 @@ export default class Settings extends React.Component {
         >
           <div className='settings'>
             <h1 className={`title ${isDark ? 'has-text-light' : ''}`}>Settings</h1>
+            <h2 className={`subtitle ${isDark ? 'has-text-light' : ''}`}>Colour Mode</h2>
+            <ModeSettings mode={settings.mode} onChangeMode={onChangeMode} />
             <h2 className={`subtitle ${isDark ? 'has-text-light' : ''}`}>Load Crafters levels from Lodestone</h2>
             <p>Insert the URL to your character's lodestone here (like <a href='https://eu.finalfantasyxiv.com/lodestone/character/14985627/'>https://eu.finalfantasyxiv.com/lodestone/character/14985627/</a>), and click Load to load your crafters class levels.</p>
             <LoadstoneLoader settings={settings} onLoad={this.onLoadLodestone} onClear={onClearClassLevels} />
