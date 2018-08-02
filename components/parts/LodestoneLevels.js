@@ -8,16 +8,16 @@ export default function LodestoneLevels ({ classLevels, isDark, onClear }) {
           <div className='control' key={doh}>
             <div className='tags has-addons'>
               <span className='tag is-info'>
-                  {doh}
+                {doh}
               </span>
               <span className={`tag ${isDark ? 'has-text-light' : ''}`}>
-                  {classLevels[doh]}
+                {classLevels[doh]}
               </span>
             </div>
           </div>
         )
-      )}
-      {!classLevels || !Object.keys(classLevels).length ? null : !onClear ? null : <div className='delete-container'><a className='delete' onClick={onClear}></a></div>}
+        )}
+      {!classLevels || !Object.keys(classLevels).length ? null : !onClear ? null : <div className='delete-container'><a className='delete' onClick={onClear} /></div>}
     </div>
   )
 }

@@ -16,7 +16,7 @@ export default ({ open, filter, onChange }) => {
                 Max Item Level
             </span>
             <span className='tag number-tag'>
-                <input type='number' placeholder='???' value={filter.ilvl} onChange={wrappedOnChange('ilvl')} />
+              <input type='number' placeholder='???' value={filter.ilvl} onChange={wrappedOnChange('ilvl')} />
             </span>
           </div>
         </div>
@@ -26,7 +26,7 @@ export default ({ open, filter, onChange }) => {
                 Max Class Level
             </span>
             <span className='tag number-tag'>
-                <input type='number' placeholder='???' value={filter.clvl} onChange={wrappedOnChange('clvl')} />
+              <input type='number' placeholder='???' value={filter.clvl} onChange={wrappedOnChange('clvl')} />
             </span>
           </div>
         </div>
@@ -37,7 +37,7 @@ export default ({ open, filter, onChange }) => {
                   Quick Synth only
               </span>
               <span className='tag'>
-                  <input type='checkbox' checked={filter.quickSynth} onChange={wrappedOnChange('quickSynth')} />
+                <input type='checkbox' checked={filter.quickSynth} onChange={wrappedOnChange('quickSynth')} />
               </span>
             </div>
           </label>
@@ -49,7 +49,7 @@ export default ({ open, filter, onChange }) => {
                   Can HQ only
               </span>
               <span className='tag'>
-                  <input type='checkbox' checked={filter.canHQ} onChange={wrappedOnChange('canHQ')} />
+                <input type='checkbox' checked={filter.canHQ} onChange={wrappedOnChange('canHQ')} />
               </span>
             </div>
           </label>

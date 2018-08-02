@@ -1,7 +1,6 @@
 import qs from 'querystring'
 import React from 'react'
 import getConfig from 'next/config'
-import axios from 'axios'
 import localforage from 'localforage'
 import { setup } from 'axios-cache-adapter'
 import debounce from 'lodash.debounce'
@@ -20,7 +19,7 @@ import CheckTag from '../components/parts/CheckTag'
 
 const { publicRuntimeConfig: config } = getConfig()
 
-if (config.gaTrackingID) ReactGA.initialize(config.gaTrackingID);
+if (config.gaTrackingID) ReactGA.initialize(config.gaTrackingID)
 
 const apiStore = localforage.createInstance({
   driver: [
@@ -94,7 +93,7 @@ class Index extends React.Component {
   }
 
   componentDidMount () {
-    if (config.gaTrackingID) ReactGA.pageview(window.location.pathname + window.location.search);
+    if (config.gaTrackingID) ReactGA.pageview(window.location.pathname + window.location.search)
     Promise.all(Object.values(STORAGE_KEYS).map((key) => localStore.getItem(key)))
       .then(([ selectedItems, suggestions, settings, userDOH, recipeFilter, openFilter ]) => {
         let initialState = { loaded: true }
@@ -131,7 +130,7 @@ class Index extends React.Component {
   autoCompleteUpdate (itemsSearch) {
     api.get(`/api/items?q=${encodeURIComponent(itemsSearch)}`)
       .then(({ data }) => {
-        this.setState({ items: data.filter(({ category_name }) => category_name !== 'Crystal') })
+        this.setState({ items: data.filter(({ category_name: cName }) => cName !== 'Crystal') })
       })
       .catch((e) => {
         console.log('error', e)
@@ -249,12 +248,13 @@ class Index extends React.Component {
             <DohCheckboxes onClick={this.setDOH} userDOH={userDOH} />
           </div>
 
-          <h1 className='is-size-3'>{selectedItems.length} Selected <button onClick={this.clearAll} className='delete is-medium clear-all'></button></h1>
+          <h1 className='is-size-3'>{selectedItems.length} Selected <button onClick={this.clearAll} className='delete is-medium clear-all' /></h1>
           <div className='selected'>{selectedItems.map((item, i) => (
             <ItemCard item={item} key={item._id} showDelete onDelete={this.deleteSelected(i)} type='item' />
           ))}</div>
 
-          <h1 className='is-size-3'>{finalSuggestions.length} Suggestions ({finalSuggestions.filter((item) => item.need.length === item.have.length).length} complete)
+          <h1 className='is-size-3'>
+            {finalSuggestions.length} Suggestions ({finalSuggestions.filter((item) => item.need.length === item.have.length).length} complete)
             <CheckTag label='Complete only' className='complete-check' checked={settings.completeOnly} onClick={this.toggleCompleteOnly} />
           </h1>
           <div className='suggestions'>{finalSuggestions.map((item) => (

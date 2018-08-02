@@ -3,10 +3,10 @@ const axios = require('axios')
 const MongoClient = require('mongodb').MongoClient
 
 function chunk (array, length) {
-  return array.reduce((all,one,i) => {
-     const ch = Math.floor(i/length);
-     all[ch] = [].concat((all[ch]||[]),one);
-     return all
+  return array.reduce((all, one, i) => {
+    const ch = Math.floor(i / length)
+    all[ch] = [].concat((all[ch] || []), one)
+    return all
   }, [])
 }
 
@@ -22,33 +22,34 @@ function fetchAndStore (db) {
 
   return new Promise((resolve) => {
     collection.find({}, { projection: { id: 1 } }).toArray().then((existingItems) => {
-        const existing = existingItems.map(({ id }) => id)
-        console.log('Skipping', existing.length, 'existing items')
-        axios('http://api.xivdb.com/recipe?columns=id').then(({ data }) => {
-          const toFetch = data.filter(({ id }) => !existing.includes(id))
-          const details = toFetch.map(({ id }) => `http://api.xivdb.com/recipe/${id}`)
-          const chunked = chunk(details, 15)
-          let processed = []
-          function processChunks () {
-            console.log('processed', processed.length, 'left ~', chunked.length * 15)
-            if (chunked.length === 0) return resolve(processed)
-            return axios.all(chunked.shift().map(axios)).then((items) => {
-              const dataItems = items.map(({ data }) => data)
-              processed = processed.concat(dataItems)
-              batchUpsert(collection, dataItems).then(() => {
-                processChunks()
-              })
+      const existing = existingItems.map(({ id }) => id)
+      console.log('Skipping', existing.length, 'existing items')
+      axios('http://api.xivdb.com/recipe?columns=id').then(({ data }) => {
+        const toFetch = data.filter(({ id }) => !existing.includes(id))
+        const details = toFetch.map(({ id }) => `http://api.xivdb.com/recipe/${id}`)
+        const chunked = chunk(details, 15)
+        let processed = []
+        function processChunks () {
+          console.log('processed', processed.length, 'left ~', chunked.length * 15)
+          if (chunked.length === 0) return resolve(processed)
+          return axios.all(chunked.shift().map(axios)).then((items) => {
+            const dataItems = items.map(({ data }) => data)
+            processed = processed.concat(dataItems)
+            batchUpsert(collection, dataItems).then(() => {
+              processChunks()
             })
-          }
+          })
+        }
 
-          processChunks()
-        })
+        processChunks()
+      })
     })
   })
 }
 
-MongoClient.connect(MONGO_URI, function(err, client) {
-  console.log("Connected successfully to server");
+MongoClient.connect(MONGO_URI, function (err, client) {
+  if (err) throw err
+  console.log('Connected successfully to server')
   const db = client.db(MONGO_DB)
 
   fetchAndStore(db)

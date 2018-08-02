@@ -11,7 +11,8 @@
     "start": "cross-env NODE_ENV=production node server",
     "build": "cross-env NODE_ENV=production next build",
     "db-dump": "mongodump --db pocketcraft",
-    "db-restore": "mongorestore --drop -d pocketcraft"
+    "db-restore": "mongorestore --drop -d pocketcraft",
+    "lint": "standard"
   },
   "engines": {
     "node": ">=9.11.1"
@@ -41,6 +42,10 @@
     "react-modal": "^3.5.1"
   },
   "devDependencies": {
-    "cross-env": "^5.2.0"
+    "cross-env": "^5.2.0",
+    "standard": "^11.0.1"
+  },
+  "standard": {
+    "globals": [ "XIVDBTooltips", "localStorage" ]
   }
 }
