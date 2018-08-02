@@ -206,7 +206,9 @@ class Index extends React.Component {
   toggleCompleteOnly () {
     const { settings } = this.state
     const newSettings = Object.assign({}, settings, { completeOnly: !settings.completeOnly })
-    this.setState({ settings: newSettings })
+    this.setState({ settings: newSettings }, () => {
+      XIVDBTooltips.get()
+    })
   }
 
   render () {
