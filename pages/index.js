@@ -14,6 +14,8 @@ import Footer from '../components/Footer'
 import DohCheckboxes from '../components/DohCheckboxes'
 import ItemAutocomplete from '../components/ItemAutocomplete'
 import Filter from '../components/RecipeFilter'
+import Settings from '../components/Settings'
+import LodestoneLevels from '../components/parts/LodestoneLevels'
 
 const { publicRuntimeConfig: config } = getConfig()
 
@@ -84,6 +86,8 @@ class Index extends React.Component {
     this.clearAll = this.clearAll.bind(this)
     this.toggleRecipeFilter = this.toggleRecipeFilter.bind(this)
     this.updateRecipeFilter = this.updateRecipeFilter.bind(this)
+    this.saveSettings = this.saveSettings.bind(this)
+    this.clearClassLevels = this.clearClassLevels.bind(this)
   }
 
   componentDidMount () {
@@ -138,12 +142,13 @@ class Index extends React.Component {
   }
 
   getSuggestions () {
-    const { selectedItems, userDOH, recipeFilter } = this.state
+    const { selectedItems, userDOH, recipeFilter, settings } = this.state
     const items = selectedItems.map(({ id }) => id).join(',')
     const dohs = userDOH.join(',')
+    const classLevels = settings.classLevels ? encodeURIComponent(qs.stringify(settings.classLevels)) : undefined
     const filters = encodeURIComponent(qs.stringify(recipeFilter))
     if (!items) return this.setState({ suggestions: [] })
-    api.get(`/api/recipes?items=${items}&classes=${dohs}&filter=${filters}`)
+    api.get(`/api/recipes?items=${items}&classes=${dohs}&filter=${filters}${classLevels ? `&classLevels=${classLevels}` : ''}`)
       .then(({ data }) => {
         this.setState({ suggestions: data }, () => {
           XIVDBTooltips.get()
@@ -185,8 +190,19 @@ class Index extends React.Component {
     this.setState({ recipeFilter: Object.assign({}, this.state.recipeFilter, { [field]: state }) }, this.getSuggestions)
   }
 
+  saveSettings (newSettings) {
+    this.setState({ settings: Object.assign({}, this.state.settings, newSettings) }, this.getSuggestions)
+  }
+
+  clearClassLevels () {
+    const settings = Object.assign({}, this.state.settings)
+    delete settings.classLevels
+    this.setState({ settings }, this.getSuggestions)
+  }
+
   render () {
     const { items, itemsSearch, selectedItems, suggestions, userDOH, settings, recipeFilter, openFilter } = this.state
+    const isDark = settings.mode === 'dark'
     const embellishedSuggestions = suggestions.map((suggestion) => {
       suggestion.have = suggestion.tree.filter((item) => selectedItems.some((selected) => selected.id === item.id))
       suggestion.need = suggestion.tree.filter((item) => item.category_name !== 'Crystal')
@@ -207,8 +223,12 @@ class Index extends React.Component {
         </div>
         <div className='container items'>
           <span className='icon is-large recipe-filter' onClick={this.toggleRecipeFilter} title='Filters'><FaFilter size='2em' /></span>
+          <Settings settings={settings} save={this.saveSettings} onClearClassLevels={this.clearClassLevels} />
           <Filter open={openFilter} filter={recipeFilter} onChange={this.updateRecipeFilter} />
-          <DohCheckboxes onClick={this.setDOH} userDOH={userDOH} />
+          <div>
+            {!settings.classLevels ? null : <LodestoneLevels classLevels={settings.classLevels} isDark={isDark} onClear={this.clearClassLevels} /> }
+            <DohCheckboxes onClick={this.setDOH} userDOH={userDOH} />
+          </div>
 
           <h1 className='is-size-3'>{selectedItems.length} Selected <button onClick={this.clearAll} className='delete is-medium clear-all'></button></h1>
           <div className='selected'>{selectedItems.map((item, i) => (

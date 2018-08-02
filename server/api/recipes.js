@@ -16,10 +16,17 @@ function handleRecipeFilter (query, filter) {
   if (filter.canHQ) Object.assign(query, { 'can_hq': filter.canHQ })
 }
 
+function handleClassLevels (query, classLevels) {
+  query['$or'] = Object.entries(classLevels).map(([ doh, level ]) => ({
+    'class_name': doh,
+    level: { $lte: level }
+  }))
+}
+
 module.exports = (db) => {
   const collection = db.collection('recipes')
   router.get('/', (req, res) => {
-    const { q, locale = 'en', items, classes, filter } = req.query
+    const { q, locale = 'en', items, classes, filter, classLevels } = req.query
     const recipeFilter = Object.entries(qs.parse(decodeURIComponent(filter))).reduce((ob, [ k, v ]) => (
       Object.assign(ob, { [k]: filterTypeMap[k] ? filterTypeMap[k](v) : v })
     ), {})
@@ -28,6 +35,12 @@ module.exports = (db) => {
     if (items) Object.assign(query, { 'tree.id': { $in: items.split(',').map(Number) } })
     if (classes) Object.assign(query, { class_name: { $in: classes.split(',') } })
     handleRecipeFilter(query, recipeFilter)
+    if (classLevels) {
+      const parsedClassLevels = Object.entries(qs.parse(decodeURIComponent(classLevels))).reduce((ob, [ k, v ]) => (
+        Object.assign(ob, { [k]: Number(v) })
+      ), {})
+      handleClassLevels(query, parsedClassLevels)
+    }
     collection.find(query, { projection: { name: 1, id: 1, class_name: 1, tree: 1 } }).stream().pipe(JSONStream.stringify()).pipe(res.type('json'))
   })
 

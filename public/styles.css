@@ -3,6 +3,10 @@ html, body {
   overflow: auto;
 }
 
+form {
+  display: inherit;
+}
+
 body.dark, body.dark .tag.is-dark {
   background-color: #01161E;
   color: #FFFFFF;
@@ -165,8 +169,40 @@ body.dark .filter-tags .tags .tag.number-tag input::placeholder {
   left: -5px;
 }
 
-.recipe-filter {
+.recipe-filter, .settings-icon {
   cursor: pointer;
-  float: right;
+  position: absolute;
   user-select: none;
+}
+
+.recipe-filter {
+  right: 5px;
+  top: -70px;
+}
+
+.settings-icon {
+  right: 110px;
+  top: -140px;
+}
+
+.settings .input-field {
+  justify-content: center;
+}
+
+.settings .input-field .control:first-of-type {
+  max-width: 400px;
+  width: 80%;
+}
+
+.settings .subtitle {
+  margin-bottom: 0.1rem;
+  margin-top: 1.25rem;
+}
+
+.settings p {
+  margin-bottom: 0.4rem;
+}
+
+.lodestone-levels .delete-container {
+  width: 0;
 }
