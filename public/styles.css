@@ -32,14 +32,16 @@ body.dark .card, body.dark .footer, body.dark .footer strong, body.dark .menu {
 body.dark .input,
 body.dark input::placeholder,
 body.dark .doh-tags .tags .tag:first-child,
-body.dark .filter-tags .tags .tag:first-child {
+body.dark .filter-tags .tags .tag:first-child,
+body.dark .complete-check .tag:first-child {
   background-color: #12355B;
   border: none;
   color: #DCDCDC;
 }
 
 body.dark .doh-tags .tags .tag:last-child,
-body.dark .filter-tags .tags .tag:last-child {
+body.dark .filter-tags .tags .tag:last-child,
+body.dark .complete-check .tag:last-child {
   background-color: #194A7F;
 }
 
@@ -216,4 +218,11 @@ body.dark .filter-tags .tags .tag.number-tag input::placeholder {
 
 .lodestone-levels .delete-container {
   width: 0;
+}
+
+.complete-check {
+  display: inline-block;
+  position: relative;
+  left: 10px;
+  bottom: 4px;
 }

@@ -16,6 +16,7 @@ import ItemAutocomplete from '../components/ItemAutocomplete'
 import Filter from '../components/RecipeFilter'
 import Settings from '../components/Settings'
 import LodestoneLevels from '../components/parts/LodestoneLevels'
+import CheckTag from '../components/parts/CheckTag'
 
 const { publicRuntimeConfig: config } = getConfig()
 
@@ -67,7 +68,8 @@ class Index extends React.Component {
       userDOH: [],
       loaded: false,
       settings: {
-        mode: 'light'
+        mode: 'light',
+        completeOnly: false
       },
       recipeFilter: {
         ilvl: '',
@@ -88,6 +90,7 @@ class Index extends React.Component {
     this.updateRecipeFilter = this.updateRecipeFilter.bind(this)
     this.saveSettings = this.saveSettings.bind(this)
     this.clearClassLevels = this.clearClassLevels.bind(this)
+    this.toggleCompleteOnly = this.toggleCompleteOnly.bind(this)
   }
 
   componentDidMount () {
@@ -148,7 +151,7 @@ class Index extends React.Component {
     const classLevels = settings.classLevels ? encodeURIComponent(qs.stringify(settings.classLevels)) : undefined
     const filters = encodeURIComponent(qs.stringify(recipeFilter))
     if (!items) return this.setState({ suggestions: [] })
-    api.get(`/api/recipes?items=${items}&classes=${dohs}&filter=${filters}${classLevels ? `&classLevels=${classLevels}` : ''}`)
+    api.get(`/api/recipes?items=${items}&classes=${dohs}&filter=${filters}&completeOnly=${settings.completeOnly}${classLevels ? `&classLevels=${classLevels}` : ''}`)
       .then(({ data }) => {
         this.setState({ suggestions: data }, () => {
           XIVDBTooltips.get()
@@ -200,6 +203,12 @@ class Index extends React.Component {
     this.setState({ settings }, this.getSuggestions)
   }
 
+  toggleCompleteOnly () {
+    const { settings } = this.state
+    const newSettings = Object.assign({}, settings, { completeOnly: !settings.completeOnly })
+    this.setState({ settings: newSettings })
+  }
+
   render () {
     const { items, itemsSearch, selectedItems, suggestions, userDOH, settings, recipeFilter, openFilter } = this.state
     const isDark = settings.mode === 'dark'
@@ -209,6 +218,9 @@ class Index extends React.Component {
       suggestion.completion = (suggestion.have.length / suggestion.need.length)
       return suggestion
     }).sort((a, b) => b.completion - a.completion)
+    const finalSuggestions = !settings.completeOnly ? embellishedSuggestions : embellishedSuggestions.filter((item) => (
+      item.need.length === item.have.length
+    ))
     return (
       <div>
         <Header mode={settings.mode} onChangeMode={this.onChangeMode} />
@@ -240,8 +252,10 @@ class Index extends React.Component {
             <ItemCard item={item} key={item._id} showDelete onDelete={this.deleteSelected(i)} type='item' />
           ))}</div>
 
-          <h1 className='is-size-3'>{embellishedSuggestions.length} Suggestions ({embellishedSuggestions.filter((item) => item.need.length === item.have.length).length} complete)</h1>
-          <div className='suggestions'>{embellishedSuggestions.map((item) => (
+          <h1 className='is-size-3'>{finalSuggestions.length} Suggestions ({finalSuggestions.filter((item) => item.need.length === item.have.length).length} complete)
+            <CheckTag label='Complete only' className='complete-check' checked={settings.completeOnly} onClick={this.toggleCompleteOnly} />
+          </h1>
+          <div className='suggestions'>{finalSuggestions.map((item) => (
             <ItemCard item={item} key={item._id} showClass showHave type='recipe' />
           ))}
           </div>
