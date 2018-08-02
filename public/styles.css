@@ -189,6 +189,13 @@ body.dark .filter-tags .tags .tag.number-tag input::placeholder {
   top: -140px;
 }
 
+@media only screen and (max-width: 768px) {
+  .settings-icon {
+    right: 15px;
+    top: -135px;
+  }
+}
+
 .settings .input-field {
   justify-content: center;
 }
