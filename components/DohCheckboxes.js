@@ -1,3 +1,4 @@
+import Translation from './parts/Translation'
 const DOH_CLASSES = [ 'Alchemist', 'Armorer', 'Blacksmith', 'Carpenter', 'Culinarian', 'Goldsmith', 'Leatherworker', 'Weaver' ]
 
 export default ({ userDOH, onClick }) => (
@@ -7,7 +8,7 @@ export default ({ userDOH, onClick }) => (
         <label className='checkbox' onClick={onClick}>
           <div className='tags has-addons'>
             <span className='tag is-info'>
-              {doh}
+              <Translation msg={`class${doh}`} />
             </span>
             <span className='tag'>
               <input type='checkbox' value={doh} checked={userDOH.includes(doh)} />

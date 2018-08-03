@@ -1,4 +1,4 @@
-import React from 'react'
+import Translation from './Translation'
 
 export default function LodestoneLevels ({ classLevels, isDark, onClear }) {
   return (
@@ -8,7 +8,7 @@ export default function LodestoneLevels ({ classLevels, isDark, onClear }) {
           <div className='control' key={doh}>
             <div className='tags has-addons'>
               <span className='tag is-info'>
-                {doh}
+                <Translation msg={`class${doh}`} />
               </span>
               <span className={`tag ${isDark ? 'has-text-light' : ''}`}>
                 {classLevels[doh]}

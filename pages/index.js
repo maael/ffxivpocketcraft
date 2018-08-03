@@ -16,6 +16,8 @@ import Filter from '../components/RecipeFilter'
 import Settings from '../components/Settings'
 import LodestoneLevels from '../components/parts/LodestoneLevels'
 import CheckTag from '../components/parts/CheckTag'
+import SettingsContext from '../components/contexts/Settings'
+import Translation from '../components/parts/Translation'
 
 const { publicRuntimeConfig: config } = getConfig()
 
@@ -68,7 +70,8 @@ class Index extends React.Component {
       loaded: false,
       settings: {
         mode: 'light',
-        completeOnly: false
+        completeOnly: false,
+        language: 'en'
       },
       recipeFilter: {
         ilvl: '',
@@ -90,6 +93,8 @@ class Index extends React.Component {
     this.saveSettings = this.saveSettings.bind(this)
     this.clearClassLevels = this.clearClassLevels.bind(this)
     this.toggleCompleteOnly = this.toggleCompleteOnly.bind(this)
+    this.completeRefresh = this.completeRefresh.bind(this)
+    this.getTooltips = this.getTooltips.bind(this)
   }
 
   componentDidMount () {
@@ -109,7 +114,9 @@ class Index extends React.Component {
             openFilter: openFilter || this.state.openFilter
           })
         }
-        this.setState(initialState)
+        this.setState(initialState, () => {
+          this.getTooltips()
+        })
       })
   }
 
@@ -122,15 +129,33 @@ class Index extends React.Component {
     return state
   }
 
+  getTooltips () {
+    const { settings } = this.state
+    XIVDBTooltips.options.language = settings.language
+    XIVDBTooltips.get()
+  }
+
+  completeRefresh (cb) {
+    const { selectedItems, suggestions } = this.state
+    this.setState({ selectedItems: [], suggestions: [] }, () => {
+      this.setState({ selectedItems, suggestions }, () => {
+        this.getTooltips()
+        cb()
+      })
+    })
+  }
+
   autoCompleteOnChange (event, itemsSearch) {
     this.setState({ itemsSearch })
     this.autoCompleteUpdate(itemsSearch)
   }
 
   autoCompleteUpdate (itemsSearch) {
-    api.get(`/api/items?q=${encodeURIComponent(itemsSearch)}`)
+    const { language } = this.state.settings
+    const crystalExclusions = [ 'Crystal', 'Cristal', 'Kristall', 'ククリリススタタルル' ]
+    api.get(`/api/items?q=${encodeURIComponent(itemsSearch)}&lang=${language}`)
       .then(({ data }) => {
-        this.setState({ items: data.filter(({ category_name: cName }) => cName !== 'Crystal') })
+        this.setState({ items: data.filter(({ category_name: cName }) => !crystalExclusions.includes(cName)) })
       })
       .catch((e) => {
         console.log('error', e)
@@ -153,7 +178,7 @@ class Index extends React.Component {
     api.get(`/api/recipes?items=${items}&classes=${dohs}&filter=${filters}&completeOnly=${settings.completeOnly}${classLevels ? `&classLevels=${classLevels}` : ''}`)
       .then(({ data }) => {
         this.setState({ suggestions: data }, () => {
-          XIVDBTooltips.get()
+          this.getTooltips()
         })
       })
   }
@@ -193,7 +218,15 @@ class Index extends React.Component {
   }
 
   saveSettings (newSettings) {
-    this.setState({ settings: Object.assign({}, this.state.settings, newSettings) }, this.getSuggestions)
+    this.setState({ settings: Object.assign({}, this.state.settings, newSettings) }, () => {
+      if (newSettings.language) {
+        this.completeRefresh(() => {
+          this.getSuggestions()
+        })
+      } else {
+        this.getSuggestions()
+      }
+    })
   }
 
   clearClassLevels () {
@@ -206,7 +239,7 @@ class Index extends React.Component {
     const { settings } = this.state
     const newSettings = Object.assign({}, settings, { completeOnly: !settings.completeOnly })
     this.setState({ settings: newSettings }, () => {
-      XIVDBTooltips.get()
+      this.getTooltips()
     })
   }
 
@@ -223,47 +256,49 @@ class Index extends React.Component {
       item.need.length === item.have.length
     ))
     return (
-      <div>
-        <Header mode={settings.mode} onChangeMode={this.onChangeMode} />
-        <div className='container search'>
-          <Head />
-          <ItemAutocomplete
-            value={itemsSearch}
-            items={items}
-            onSelect={this.autoCompleteOnSelect}
-            onChange={this.autoCompleteOnChange}
-          />
-        </div>
-        <div className='container items'>
-          <span className='icon is-large recipe-filter' onClick={this.toggleRecipeFilter} title='Filters'><FaFilter size='2em' /></span>
-          <Settings
-            settings={settings}
-            save={this.saveSettings}
-            onClearClassLevels={this.clearClassLevels}
-            onChangeMode={this.onChangeMode}
-          />
-          <Filter open={openFilter} filter={recipeFilter} onChange={this.updateRecipeFilter} />
-          <div>
-            {!settings.classLevels ? null : <LodestoneLevels classLevels={settings.classLevels} isDark={isDark} onClear={this.clearClassLevels} /> }
-            <DohCheckboxes onClick={this.setDOH} userDOH={userDOH} />
+      <SettingsContext.Provider value={{ settings, updateSettings: this.saveSettings, isDark: (settings) => settings.mode === 'dark' }}>
+        <div>
+          <Header settings={settings} onChangeMode={this.onChangeMode} />
+          <div className='container search'>
+            <Head />
+            <ItemAutocomplete
+              value={itemsSearch}
+              items={items}
+              onSelect={this.autoCompleteOnSelect}
+              onChange={this.autoCompleteOnChange}
+            />
           </div>
+          <div className='container items'>
+            <span className='icon is-large recipe-filter' onClick={this.toggleRecipeFilter} title='Filters'><FaFilter size='2em' /></span>
+            <Settings
+              settings={settings}
+              save={this.saveSettings}
+              onClearClassLevels={this.clearClassLevels}
+              onChangeMode={this.onChangeMode}
+            />
+            <Filter open={openFilter} filter={recipeFilter} onChange={this.updateRecipeFilter} />
+            <div>
+              {!settings.classLevels ? null : <LodestoneLevels classLevels={settings.classLevels} isDark={isDark} onClear={this.clearClassLevels} /> }
+              <DohCheckboxes onClick={this.setDOH} userDOH={userDOH} />
+            </div>
 
-          <h1 className='is-size-3'>{selectedItems.length} Selected <button onClick={this.clearAll} className='delete is-medium clear-all' /></h1>
-          <div className='selected'>{selectedItems.map((item, i) => (
-            <ItemCard item={item} key={item._id} showDelete onDelete={this.deleteSelected(i)} type='item' />
-          ))}</div>
+            <h1 className='is-size-3'>{selectedItems.length} Selected <button onClick={this.clearAll} className='delete is-medium clear-all' /></h1>
+            <div className='selected'>{selectedItems.map((item, i) => (
+              <ItemCard item={item} key={item._id} showDelete onDelete={this.deleteSelected(i)} type='item' />
+            ))}</div>
 
-          <h1 className='is-size-3'>
-            {finalSuggestions.length} Suggestions ({finalSuggestions.filter((item) => item.need.length === item.have.length).length} complete)
-            <CheckTag label='Complete only' className='complete-check' checked={settings.completeOnly} onClick={this.toggleCompleteOnly} />
-          </h1>
-          <div className='suggestions'>{finalSuggestions.map((item) => (
-            <ItemCard item={item} key={item._id} showClass showHave type='recipe' />
-          ))}
+            <h1 className='is-size-3'>
+              {finalSuggestions.length} Suggestions ({finalSuggestions.filter((item) => item.need.length === item.have.length).length} complete)
+              <CheckTag label={<Translation msg='filterCompleteOnly' />} className='complete-check' checked={settings.completeOnly} onClick={this.toggleCompleteOnly} />
+            </h1>
+            <div className='suggestions'>{finalSuggestions.map((item) => (
+              <ItemCard item={item} key={item._id} showClass showHave type='recipe' />
+            ))}
+            </div>
           </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </SettingsContext.Provider>
     )
   }
 }

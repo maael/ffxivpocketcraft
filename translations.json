@@ -1,0 +1,45 @@
+{
+  "en": {
+    "searchPlaceholder": "Search for items...",
+    "settingsHover": "Settings",
+    "settingsTitle": "Settings",
+    "settingsColourMode": "Colour Mode",
+    "settingsColourModeLight": "Light",
+    "settingsColourModeDark": "Dark",
+    "settingsLoadLodestone": "Load Crafts levels from Lodestone",
+    "settingsLoadLoadstoneDesc": "Insert the URL to your character's lodestone here (like https://eu.finalfantasyxiv.com/lodestone/character/14985627/), and click Load to load your crafters class levels.",
+    "settingsLoadLoadstonePlaceholder": "Lodestone Character URL",
+    "settingsLoadLoadstoneButton": "Load",
+    "settingsQuantityMode": "Quantity Mode",
+    "settingsQuantityModeDesc": "Allows you to add quantities to the items you add, and will suggest recipes using the actual quantities you have (Work in progress)",
+    "settingsImport": "Import Inventories",
+    "settingsImportDesc": "Work in progress",
+    "settingsLanguage": "Language/Region",
+    "selectedItems": "Selected",
+    "suggestions": "Suggestion",
+    "complete": "complete",
+    "filtersHover": "Filters",
+    "filterCompleteOnly": "Complete only",
+    "filterMaxILvl": "Max Item Level",
+    "filterMaxClassLvl": "Max Class Level",
+    "filterQuickSynth": "Quick synth only",
+    "filterHQ": "Can HQ only",
+    "classAlchemist": "Alchemist",
+    "classArmorer": "Armorer",
+    "classBlacksmith": "Blacksmith",
+    "classCarpenter": "Carpenter",
+    "classCulinarian": "Culinarian",
+    "classGoldsmith": "Goldsmith",
+    "classLeatherworker": "Leatherworker",
+    "classWeaver": "Weaver"
+  },
+  "de": {
+
+  },
+  "fr": {
+
+  },
+  "ja": {
+
+  }
+}

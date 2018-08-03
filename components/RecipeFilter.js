@@ -1,4 +1,4 @@
-import React from 'react'
+import Translation from './parts/Translation'
 
 export default ({ open, filter, onChange }) => {
   function wrappedOnChange (field) {
@@ -13,7 +13,7 @@ export default ({ open, filter, onChange }) => {
         <div className='control'>
           <div className='tags has-addons'>
             <span className='tag is-info'>
-                Max Item Level
+              <Translation msg='filterMaxILvl' />
             </span>
             <span className='tag number-tag'>
               <input type='number' placeholder='???' value={filter.ilvl} onChange={wrappedOnChange('ilvl')} />
@@ -23,7 +23,7 @@ export default ({ open, filter, onChange }) => {
         <div className='control'>
           <div className='tags has-addons'>
             <span className='tag is-info'>
-                Max Class Level
+              <Translation msg='filterMaxClassLvl' />
             </span>
             <span className='tag number-tag'>
               <input type='number' placeholder='???' value={filter.clvl} onChange={wrappedOnChange('clvl')} />
@@ -34,7 +34,7 @@ export default ({ open, filter, onChange }) => {
           <label className='checkbox'>
             <div className='tags has-addons'>
               <span className='tag is-info'>
-                  Quick Synth only
+                <Translation msg='filterQuickSynth' />
               </span>
               <span className='tag'>
                 <input type='checkbox' checked={filter.quickSynth} onChange={wrappedOnChange('quickSynth')} />
@@ -46,7 +46,7 @@ export default ({ open, filter, onChange }) => {
           <label className='checkbox'>
             <div className='tags has-addons'>
               <span className='tag is-info'>
-                  Can HQ only
+                <Translation msg='filterHQ' />
               </span>
               <span className='tag'>
                 <input type='checkbox' checked={filter.canHQ} onChange={wrappedOnChange('canHQ')} />

@@ -3,7 +3,7 @@ const items = require('./items')
 const recipes = require('./recipes')
 const proxy = require('./proxy')
 
-module.exports = (db) => router
-  .use('/items', items(db))
-  .use('/recipes', recipes(db))
+module.exports = (dbs) => router
+  .use('/items', items(dbs))
+  .use('/recipes', recipes(dbs))
   .use('/proxy', proxy())

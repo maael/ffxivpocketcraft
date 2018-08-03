@@ -1,6 +1,7 @@
 const qs = require('querystring')
 const router = require('express').Router()
 const JSONStream = require('JSONStream')
+const { languageHelper } = require('../lib/helpers')
 
 const filterTypeMap = {
   ilvl: Number,
@@ -23,10 +24,11 @@ function handleClassLevels (query, classLevels) {
   }))
 }
 
-module.exports = (db) => {
-  const collection = db.collection('recipes')
+module.exports = (dbs) => {
   router.get('/', (req, res) => {
-    const { q, locale = 'en', items, classes, filter, classLevels } = req.query
+    const { q, locale = 'en', items, classes, filter, classLevels, lang } = req.query
+    const language = languageHelper(lang)
+    const collection = dbs[language].collection('recipes')
     const recipeFilter = Object.entries(qs.parse(decodeURIComponent(filter))).reduce((ob, [ k, v ]) => (
       Object.assign(ob, { [k]: filterTypeMap[k] ? filterTypeMap[k](v) : v })
     ), {})

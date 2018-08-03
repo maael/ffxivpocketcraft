@@ -226,3 +226,19 @@ body.dark .filter-tags .tags .tag.number-tag input::placeholder {
   left: 10px;
   bottom: 4px;
 }
+
+.notification.is-icon:hover,
+.notification.is-icon.is-active {
+  background-color: #209CEE;
+}
+
+body.dark .notification.is-icon:hover,
+body.dark .notification.is-icon.is-active {
+  background-color: #12355B;
+}
+
+.notification.is-icon {
+  background-color: transparent;
+  cursor: pointer;
+  user-select: none;
+}
