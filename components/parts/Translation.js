@@ -1,10 +1,21 @@
 import SettingsContext from '../contexts/Settings'
-const translations = require('../../translations.json')
+let translations = {}
+
+try {
+  translations = require('../../translations.json')
+} catch (e) {}
 
 export default function Translation ({ msg }) {
   return (
     <SettingsContext.Consumer>
-      {({ settings }) => (translations[settings.language][msg] ? translations[settings.language][msg] : translations['en'][msg]) || 'Missing translation'}
+      {({ settings }) => {
+        try {
+          return (translations[settings.language][msg] ? translations[settings.language][msg] : translations['en'][msg]) || '[Missing translation]'
+        } catch (e) {
+          console.error('[Translation]', 'Failed', e)
+          return '[Missing translation]'
+        }
+      }}
     </SettingsContext.Consumer>
   )
 }
