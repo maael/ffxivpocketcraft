@@ -73,7 +73,7 @@ export default class Settings extends React.Component {
                 <h2 className={`subtitle ${isDark(settings) ? 'has-text-light' : ''}`}><Translation msg='settingsColourMode' /></h2>
                 <ModeSettings settings={settings} onChangeMode={onChangeMode} />
                 <h2 className={`subtitle ${isDark(settings) ? 'has-text-light' : ''}`}><Translation msg='settingsLoadLodestone' /></h2>
-                <p>Insert the URL to your character's lodestone here (like <a href='https://eu.finalfantasyxiv.com/lodestone/character/14985627/'>https://eu.finalfantasyxiv.com/lodestone/character/14985627/</a>), and click Load to load your crafters class levels.</p>
+                <p><Translation msg='settingsLoadLoadstoneDesc' /></p>
                 <LoadstoneLoader settings={settings} onLoad={this.onLoadLodestone(updateSettings)} onClear={onClearClassLevels} />
                 <h2 className={`subtitle ${isDark(settings) ? 'has-text-light' : ''}`}><Translation msg='settingsLanguage' /></h2>
                 <div className='columns is-mobile is-multiline is-centered has-text-centered'>

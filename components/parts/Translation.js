@@ -10,7 +10,8 @@ export default function Translation ({ msg }) {
     <SettingsContext.Consumer>
       {({ settings }) => {
         try {
-          return (translations[settings.language][msg] ? translations[settings.language][msg] : translations['en'][msg]) || '[Missing translation]'
+          const result = (translations[settings.language][msg] ? translations[settings.language][msg] : translations['en'][msg]) || '[Missing translation]'
+          return <span dangerouslySetInnerHTML={{ __html: result.replace(/\[link\|(.+)]/, '<a href="$1">$1</a>') }} />
         } catch (e) {
           console.error('[Translation]', 'Failed', e)
           return '[Missing translation]'
