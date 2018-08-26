@@ -18,8 +18,7 @@ Copy `.env.schema` to `.env`, and fill it out.
 ### Data
 
 Data is pulled from [xivdb.com](http://xivdb.com), and you will want to run `yarn import-recipes` followed by `extract-items`.
-These commands will populate a MongoDB database, as specified via the `MONGO_URI` and `MONGO_DB` values in `.env`.
-In the databse there will be two collections, `recipes` and `items` respectively.
+These commands will populate MongoDB databases, as specified via the `MONGO_URI` and `MONGO_DB` values in `.env`. There will be a database per region, with `'_en', '_de', '_fr', '_ja'` as the suffixes on `MONGO_DB`. In the databse there will be two collections, `recipes` and `items` respectively.
 
 ### Development
 
@@ -32,6 +31,8 @@ yarn dev
 ```
 yarn build && yarn start
 ```
+
+Although on production this is managed via [pm2](https://github.com/Unitech/pm2).
 
 ## Available commands
 
