@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "yarn lint",
     "extract-items": "node scripts/extract-items-from-local-recipes",
     "import-recipes": "node scripts/import-recipes-from-xivdb",
     "dev": "cross-env NODE_ENV=development node server",
