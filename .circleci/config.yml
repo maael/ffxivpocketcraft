@@ -24,7 +24,7 @@ jobs:
       - run:
           name: Deploy over SSH
           command: |
-            ssh $SSH_USER@$SSH_HOST "cd /var/www/pocketcraft.trade && mkdir -p ../archive/$(date +%y-%m-%d--%H-%M-%S) && cp -R . ../archive/$(date +%y-%m-%d--%H-%M-%S) && git pull && yarn build && pm2 restart server"
+            ssh $SSH_USER@$SSH_HOST 'ARCHIVE=../archive/$(date +%y-%m-%d--%H-%M-%S) && cd /var/www/pocketcraft.trade && echo "Archiving current to $ARCHIVE" && mkdir -p "$ARCHIVE" && cp -R . "$ARCHIVE" && rm -r "$ARCHIVE/node_modules" && git pull && yarn build && pm2 restart server'
 
 workflows:
   version: 2
