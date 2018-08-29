@@ -41,6 +41,9 @@ function fetchAndStore (db, lang) {
             batchUpsert(collection, dataItems, lang).then(() => {
               processChunks()
             })
+          }).catch((e) => {
+            console.error(e)
+            console.log('Caught network error')
           })
         }
 
@@ -54,13 +57,23 @@ MongoClient.connect(MONGO_URI, function (err, client) {
   if (err) throw err
   console.log('Connected successfully to server')
 
-  handleLanguage(client).then(() => {
-    console.log('Finished all languages')
-    client.close()
-  }).catch((e) => {
-    console.log(e)
-    client.close()
+  handle()
+
+  process.on('unhandledRejection', error => {
+    console.log('Error', error)
+    console.log('Waiting')
+    setTimeout(() => handle(), 10000)
   })
+
+  function handle () {
+    handleLanguage(client).then(() => {
+      console.log('Finished all languages')
+      client.close()
+    }).catch((e) => {
+      console.log(e)
+      client.close()
+    })
+  }
 })
 
 function handleLanguage (client) {
