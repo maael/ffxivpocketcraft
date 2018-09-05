@@ -1,7 +1,8 @@
 import React from 'react'
 import Modal from 'react-modal'
 import { FaWrench } from 'react-icons/fa'
-import LoadstoneLoader from './LodestoneLoader'
+import LoadstoneLoader from './loaders/Lodestone'
+import RetainerLoader from './loaders/Retainer'
 import ModeSettings from './parts/ModeSettings'
 import Translation from './parts/Translation'
 import SettingsContext from './contexts/Settings'
@@ -18,6 +19,7 @@ export default class Settings extends React.Component {
     }
     this.changeModal = this.changeModal.bind(this)
     this.onLoadLodestone = this.onLoadLodestone.bind(this)
+    this.onLoadRetainer = this.onLoadRetainer.bind(this)
     this.onLanguageClick = this.onLanguageClick.bind(this)
   }
 
@@ -29,7 +31,14 @@ export default class Settings extends React.Component {
 
   onLoadLodestone (save) {
     return (classLevels) => {
-      if (save) save({ classLevels: classLevels })
+      if (save) save('settings', { classLevels: classLevels })
+    }
+  }
+
+  onLoadRetainer (settings, save) {
+    return (items) => {
+      console.log('saving', items, settings, save)
+      if (save) save('selectedItems')(items)
     }
   }
 
@@ -42,7 +51,7 @@ export default class Settings extends React.Component {
   }
 
   render () {
-    const { onClearClassLevels, onChangeMode } = this.props
+    const { onClearClassLevels, onChangeMode, save } = this.props
     const { open } = this.state
 
     function getStyles (settings, isDark) {
@@ -85,6 +94,9 @@ export default class Settings extends React.Component {
                     </div>
                   ))}
                 </div>
+                <h2 className={`subtitle ${isDark(settings) ? 'has-text-light' : ''}`}><Translation msg='settingsLoadRetainer' /></h2>
+                <p><Translation msg='settingsLoadRetainerDesc' /></p>
+                <RetainerLoader settings={settings} onLoad={this.onLoadRetainer(settings, save)} onClear={onClearClassLevels} />
                 <h2 className={`subtitle ${isDark(settings) ? 'has-text-light' : ''}`}><Translation msg='settingsQuantityMode' /></h2>
                 <p><Translation msg='settingsQuantityModeDesc' /></p>
                 <h2 className={`subtitle ${isDark(settings) ? 'has-text-light' : ''}`}><Translation msg='settingsImport' /></h2>

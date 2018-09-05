@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import cheerio from 'cheerio'
-import LodestoneLevels from './parts/LodestoneLevels'
+import LodestoneLevels from '../parts/LodestoneLevels'
 
 export default class LodestoneLoader extends React.Component {
   constructor (props) {
