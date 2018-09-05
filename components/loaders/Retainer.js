@@ -5,7 +5,7 @@ export default class RetainerLoader extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      toParse: 'test',
+      toParse: 'Copper Ore 1',
       prepared: [],
       imported: {},
       loading: false,
