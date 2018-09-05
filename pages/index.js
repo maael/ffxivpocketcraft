@@ -90,7 +90,7 @@ class Index extends React.Component {
     this.clearAll = this.clearAll.bind(this)
     this.toggleRecipeFilter = this.toggleRecipeFilter.bind(this)
     this.updateRecipeFilter = this.updateRecipeFilter.bind(this)
-    this.saveSettings = this.saveSettings.bind(this)
+    this.saveState = this.saveState.bind(this)
     this.clearClassLevels = this.clearClassLevels.bind(this)
     this.toggleCompleteOnly = this.toggleCompleteOnly.bind(this)
     this.completeRefresh = this.completeRefresh.bind(this)
@@ -217,16 +217,26 @@ class Index extends React.Component {
     this.setState({ recipeFilter: Object.assign({}, this.state.recipeFilter, { [field]: state }) }, this.getSuggestions)
   }
 
-  saveSettings (newSettings) {
-    this.setState({ settings: Object.assign({}, this.state.settings, newSettings) }, () => {
-      if (newSettings.language) {
-        this.completeRefresh(() => {
-          this.getSuggestions()
-        })
-      } else {
-        this.getSuggestions()
+  saveState (key) {
+    return (update, options = { uniqueField: 'id' }) => {
+      function unique (el, i, ar) {
+        return ar.findIndex((el2) => el2[options.uniqueField] === el[options.uniqueField]) === i
       }
-    })
+      const state = Object.assign({}, this.state)
+      const value = this.state[key]
+      if (Array.isArray(value)) state[key] = (state[key] || []).concat(update).filter(unique)
+      else if (typeof value === 'object') Object.assign(state[key], update)
+      else state[key] = update
+      this.setState(state, () => {
+        if (key === 'settings' && update.language) {
+          this.completeRefresh(() => {
+            this.getSuggestions()
+          })
+        } else {
+          this.getSuggestions()
+        }
+      })
+    }
   }
 
   clearClassLevels () {
@@ -256,7 +266,7 @@ class Index extends React.Component {
       item.need.length === item.have.length
     ))
     return (
-      <SettingsContext.Provider value={{ settings, updateSettings: this.saveSettings, isDark: (settings) => settings.mode === 'dark' }}>
+      <SettingsContext.Provider value={{ settings, updateSettings: this.saveState('settings'), isDark: (settings) => settings.mode === 'dark' }}>
         <div>
           <Header settings={settings} onChangeMode={this.onChangeMode} />
           <div className='container search'>
@@ -272,7 +282,7 @@ class Index extends React.Component {
             <span className='icon is-large recipe-filter' onClick={this.toggleRecipeFilter} title='Filters'><FaFilter size='2em' /></span>
             <Settings
               settings={settings}
-              save={this.saveSettings}
+              save={this.saveState}
               onClearClassLevels={this.clearClassLevels}
               onChangeMode={this.onChangeMode}
             />
