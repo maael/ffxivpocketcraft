@@ -1,11 +1,13 @@
 import React from 'react'
 import axios from 'axios'
 
+const PLACEHOLDER = 'Please place items here, separated by a newline'
+
 export default class RetainerLoader extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      toParse: 'Copper Ore 1',
+      toParse: PLACEHOLDER,
       prepared: [],
       imported: {},
       loading: false,
@@ -15,10 +17,20 @@ export default class RetainerLoader extends React.Component {
     this.load = this.load.bind(this)
     this.onClear = this.onClear.bind(this)
     this.prepare = this.prepare.bind(this)
+    this.onFocus = this.onFocus.bind(this)
+    this.onBlur = this.onBlur.bind(this)
   }
 
   onChange (e) {
     this.setState({ [e.target.name]: e.target.value }, this.prepare)
+  }
+
+  onFocus () {
+    if (this.state.toParse === PLACEHOLDER) this.setState({ toParse: '' })
+  }
+
+  onBlur () {
+    if (!this.state.toParse.trim()) this.setState({ toParse: PLACEHOLDER })
   }
 
   prepare () {
@@ -58,7 +70,14 @@ export default class RetainerLoader extends React.Component {
     return (
       <div>
         <p className='control'>
-          <textarea className='input' value={toParse} name='toParse' onChange={this.onChange} />
+          <textarea
+            className='input'
+            value={toParse}
+            name='toParse'
+            onChange={this.onChange}
+            onBlur={this.onBlur}
+            onFocus={this.onFocus}
+          />
         </p>
         <p>Expecting to import: {prepared.length} item{prepared.length === 1 ? '' : 's'}</p>
         {!imported.finished ? null : `Imported: ${imported.length || 0} item${imported.length === 1 ? '' : 's'}`}
