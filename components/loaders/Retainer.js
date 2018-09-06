@@ -27,11 +27,7 @@ export default class RetainerLoader extends React.Component {
       .map((i) => {
         const trimmed = i.trim()
         const match = trimmed.match(/(.+)\s+[0-9]{1,3}?/)
-        if (match) {
-          return match[1].trim()
-        } else {
-          console.warn('[retainer]', 'skipping', trimmed)
-        }
+        return match ? match[1].trim() : trimmed
       }).filter(Boolean)
     this.setState({ prepared })
   }
