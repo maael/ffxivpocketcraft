@@ -31,7 +31,7 @@ export default class Settings extends React.Component {
 
   onLoadLodestone (save) {
     return (classLevels) => {
-      if (save) save('settings', { classLevels: classLevels })
+      if (save) save({ classLevels: classLevels })
     }
   }
 
