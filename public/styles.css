@@ -242,3 +242,9 @@ body.dark .notification.is-icon.is-active {
   cursor: pointer;
   user-select: none;
 }
+
+.flag-icon {
+  height: 11px;
+  width: 16px;
+  max-width: 16px;
+}

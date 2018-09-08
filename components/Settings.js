@@ -89,7 +89,7 @@ export default class Settings extends React.Component {
                   {languages.map((lang) => (
                     <div className='column is-one-fifth' key={lang}>
                       <p className={`notification is-icon ${lang === settings.language ? 'is-active' : ''}`} onClick={this.onLanguageClick(updateSettings)(lang)}>
-                        <img src={`/public/imgs/flags/${lang}.png`} />
+                        <img className='flag-icon' src={`/public/imgs/flags/${lang}.png`} />
                       </p>
                     </div>
                   ))}
