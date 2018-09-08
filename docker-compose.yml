@@ -11,4 +11,4 @@ services:
   mongo:
     image: mongo
     volumes:
-      - /usr/local/var/mongodb:/data/db
+      - /data/db:/data/db
