@@ -26,7 +26,7 @@ function handleClassLevels (query, classLevels) {
 
 module.exports = (dbs) => {
   router.get('/', (req, res) => {
-    const { q, locale = 'en', items, classes, filter, classLevels, lang } = req.query
+    const { q, locale = 'en', items, classes, filter, classLevels, lang, server } = req.query
     const language = languageHelper(lang)
     const collection = dbs[language].collection('recipes')
     const recipeFilter = Object.entries(qs.parse(decodeURIComponent(filter))).reduce((ob, [ k, v ]) => (
@@ -43,7 +43,12 @@ module.exports = (dbs) => {
       ), {})
       handleClassLevels(query, parsedClassLevels)
     }
-    collection.find(query, { projection: { name: 1, id: 1, class_name: 1, tree: 1 } }).stream().pipe(JSONStream.stringify()).pipe(res.type('json'))
+    const projection = { projection: { name: 1, id: 1, class_name: 1, tree: 1 } };
+    if (server) {
+      projection.projection[`markets.${server}.lowest`] = 1;
+      projection.projection[`markets.${server}.lastUpdated`] = 1;
+    }
+    collection.find(query, projection).stream().pipe(JSONStream.stringify()).pipe(res.type('json'))
   })
 
   return router

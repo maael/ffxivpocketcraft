@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import Bookmarklet from '../Bookmarlet'
 
 const PLACEHOLDER = 'Please place items here, separated by a newline'
 
@@ -69,8 +70,10 @@ export default class RetainerLoader extends React.Component {
 
     return (
       <div>
+        <Bookmarklet />
         <p className='control'>
           <textarea
+            style={{marginTop: '0.4rem'}}
             className='input'
             value={toParse}
             name='toParse'
@@ -79,8 +82,8 @@ export default class RetainerLoader extends React.Component {
             onFocus={this.onFocus}
           />
         </p>
-        <p>Expecting to import: {prepared.length} item{prepared.length === 1 ? '' : 's'}</p>
-        {!imported.finished ? null : `Imported: ${imported.length || 0} item${imported.length === 1 ? '' : 's'}`}
+        <p>Found {prepared.length} item{prepared.length === 1 ? '' : 's'}</p>
+        <p>{!imported.finished ? null : `Imported ${imported.length || 0} crafting item${imported.length === 1 ? '' : 's'}`}</p>
         <div className='input-field field has-addons'>
           <form onSubmit={this.load}>
             <p className='control'>

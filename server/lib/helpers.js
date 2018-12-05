@@ -1,4 +1,5 @@
 const { LANGUAGES } = require('dotenv-extended').load()
+const debug = require('debug')
 const languages = LANGUAGES.split(',')
 
 function languageHelper (lang) {
@@ -8,5 +9,6 @@ function languageHelper (lang) {
 
 module.exports = {
   languages,
-  languageHelper
+  languageHelper,
+  debug: debug('pocketcraft')
 }

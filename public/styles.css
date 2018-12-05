@@ -7,9 +7,17 @@ form {
   display: inherit;
 }
 
+body.dark a:hover {
+  color: #FFFFFF;
+}
+
 body.dark, body.dark .tag.is-dark {
   background-color: #01161E;
   color: #FFFFFF;
+}
+
+.tag {
+  cursor: default;
 }
 
 .tag.is-light, .tag.is-dark {
@@ -33,7 +41,8 @@ body.dark .input,
 body.dark input::placeholder,
 body.dark .doh-tags .tags .tag:first-child,
 body.dark .filter-tags .tags .tag:first-child,
-body.dark .complete-check .tag:first-child {
+body.dark .complete-check .tag:first-child,
+body.dark .sort-select .tag:first-child {
   background-color: #12355B;
   border: none;
   color: #DCDCDC;
@@ -41,8 +50,11 @@ body.dark .complete-check .tag:first-child {
 
 body.dark .doh-tags .tags .tag:last-child,
 body.dark .filter-tags .tags .tag:last-child,
-body.dark .complete-check .tag:last-child {
+body.dark .complete-check .tag:last-child,
+body.dark .sort-select .tag:last-child,
+body.dark .sort-select .tag:last-child select {
   background-color: #194A7F;
+  color: #DCDCDC;
 }
 
 body.light .filter-tags .tags .tag.number-tag,
@@ -140,10 +152,14 @@ body.dark .filter-tags .tags .tag.number-tag input::placeholder {
 }
 
 .selected .card, .suggestions .card {
-  margin: 10px;
+  margin: 3px;
 }
 
-.selected .card .card-content, .suggestions .card .card-content {
+.selected .card .card-content {
+  padding: 5px;
+}
+
+.suggestions .card .card-content {
   padding: 10px;
 }
 
@@ -225,6 +241,13 @@ body.dark .filter-tags .tags .tag.number-tag input::placeholder {
   position: relative;
   left: 10px;
   bottom: 4px;
+}
+
+.sort-select {
+  display: inline-block;
+  position: relative;
+  left: 20px;
+  bottom: 4px
 }
 
 .notification.is-icon:hover,

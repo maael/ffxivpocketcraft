@@ -18,6 +18,7 @@ import LodestoneLevels from '../components/parts/LodestoneLevels'
 import CheckTag from '../components/parts/CheckTag'
 import SettingsContext from '../components/contexts/Settings'
 import Translation from '../components/parts/Translation'
+import SortTag from '../components/parts/SortTag'
 
 const { publicRuntimeConfig: config } = getConfig()
 
@@ -175,7 +176,7 @@ class Index extends React.Component {
     const classLevels = settings.classLevels ? encodeURIComponent(qs.stringify(settings.classLevels)) : undefined
     const filters = encodeURIComponent(qs.stringify(recipeFilter))
     if (!items) return this.setState({ suggestions: [] })
-    api.get(`/api/recipes?items=${items}&classes=${dohs}&filter=${filters}&completeOnly=${settings.completeOnly}${classLevels ? `&classLevels=${classLevels}` : ''}`)
+    api.get(`/api/recipes?items=${items}&classes=${dohs}&filter=${filters}&completeOnly=${settings.completeOnly}${classLevels ? `&classLevels=${classLevels}` : ''}${settings.server ? `&server=${settings.server}` : ''}`)
       .then(({ data }) => {
         this.setState({ suggestions: data }, () => {
           this.getTooltips()
@@ -253,15 +254,46 @@ class Index extends React.Component {
     })
   }
 
+  sort (arr, settings) {
+    if (settings.sort === 'market') {
+      const sortFn = (a, b) => {
+        return b.markets[settings.server].lowest.normal - a.markets[settings.server].lowest.normal;
+      }
+      return arr
+        .filter((a) =>
+          a.markets &&
+          a.markets[settings.server] &&
+          a.markets[settings.server].lowest &&
+          a.markets[settings.server].lowest.normal
+        ).sort(sortFn).concat(arr.filter((a) =>
+          !a.markets ||
+          !a.markets[settings.server] ||
+          !a.markets[settings.server].lowest ||
+          !a.markets[settings.server].lowest.normal
+        ).sort((a, b) => b.completion - a.completion))
+    } else {
+      const sortFn = (a, b) => {
+        const completionDiff = b.completion - a.completion;
+        if (completionDiff === 0 && a.markets && a.markets[settings.server] && b.markets && b.markets[settings.server]) {
+          return b.markets[settings.server].lowest.normal - a.markets[settings.server].lowest.normal;
+        } else {
+          return completionDiff;
+        }
+      }
+      return arr.sort(sortFn)
+    }
+  }
+
   render () {
     const { items, itemsSearch, selectedItems, suggestions, userDOH, settings, recipeFilter, openFilter } = this.state
     const isDark = settings.mode === 'dark'
-    const embellishedSuggestions = suggestions.map((suggestion) => {
+    let embellishedSuggestions = suggestions.map((suggestion) => {
       suggestion.have = suggestion.tree.filter((item) => selectedItems.some((selected) => selected.id === item.id))
       suggestion.need = suggestion.tree.filter((item) => item.category_name !== 'Crystal')
       suggestion.completion = (suggestion.have.length / suggestion.need.length)
       return suggestion
-    }).sort((a, b) => b.completion - a.completion)
+    })
+    embellishedSuggestions = this.sort(embellishedSuggestions, settings)
     const finalSuggestions = !settings.completeOnly ? embellishedSuggestions : embellishedSuggestions.filter((item) => (
       item.need.length === item.have.length
     ))
@@ -300,9 +332,10 @@ class Index extends React.Component {
             <h1 className='is-size-3'>
               {finalSuggestions.length} Suggestions ({finalSuggestions.filter((item) => item.need.length === item.have.length).length} complete)
               <CheckTag label={<Translation msg='filterCompleteOnly' />} className='complete-check' checked={settings.completeOnly} onClick={this.toggleCompleteOnly} />
+              <SortTag label='Sort by' className='sort-select' />
             </h1>
             <div className='suggestions'>{finalSuggestions.map((item) => (
-              <ItemCard item={item} key={item._id} showClass showHave type='recipe' />
+              <ItemCard server={settings.server} item={item} key={item._id} showClass showHave type='recipe' />
             ))}
             </div>
           </div>

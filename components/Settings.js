@@ -5,6 +5,7 @@ import LoadstoneLoader from './loaders/Lodestone'
 import RetainerLoader from './loaders/Retainer'
 import ModeSettings from './parts/ModeSettings'
 import Translation from './parts/Translation'
+import ServerSelect from './parts/ServerSelect'
 import SettingsContext from './contexts/Settings'
 
 Modal.setAppElement('#__next')
@@ -95,8 +96,18 @@ export default class Settings extends React.Component {
                   ))}
                 </div>
                 <h2 className={`subtitle ${isDark(settings) ? 'has-text-light' : ''}`}><Translation msg='settingsLoadRetainer' /></h2>
-                <p><Translation msg='settingsLoadRetainerDesc' /></p>
+                <ol style={{marginLeft: 25, marginBottom: 5}}>
+                  <li><Translation msg='settingsLoadRetainerDesc1' /></li>
+                  <li><Translation msg='settingsLoadRetainerDesc2' /></li>
+                  <li><Translation msg='settingsLoadRetainerDesc3' /></li>
+                  <li><Translation msg='settingsLoadRetainerDesc4' /></li>
+                </ol>
+                <p><Translation msg='settingsLoadRetainerDesc5' /></p>
+                <p><Translation msg='settingsLoadRetainerDesc6' /></p>
                 <RetainerLoader settings={settings} onLoad={this.onLoadRetainer(settings, save)} onClear={onClearClassLevels} />
+                <h2 className={`subtitle ${isDark(settings) ? 'has-text-light' : ''}`}><Translation msg='settingsServer' /></h2>
+                <p><Translation msg='settingsServerDesc' /></p>
+                <div className='has-text-centered'><ServerSelect /></div>
                 <h2 className={`subtitle ${isDark(settings) ? 'has-text-light' : ''}`}><Translation msg='settingsQuantityMode' /></h2>
                 <p><Translation msg='settingsQuantityModeDesc' /></p>
                 <h2 className={`subtitle ${isDark(settings) ? 'has-text-light' : ''}`}><Translation msg='settingsImport' /></h2>
