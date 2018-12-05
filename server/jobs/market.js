@@ -1,4 +1,4 @@
-const { EXCLUDED_SERVERS, MONGO_URI, MONGO_DB, LANGUAGES } = require('dotenv-extended').load()
+const { EXCLUDED_SERVERS, MONGO_URI, MONGO_DB, LANGUAGES, NO_JOB } = require('dotenv-extended').load()
 const Agenda = require('agenda')
 const Queue = require('p-queue')
 const xivapi = require('../lib/xivapi')
@@ -14,9 +14,12 @@ module.exports = async function start (dbs) {
   agenda.define('update market data', runTask(dbs))
   await agenda.start()
   await agenda.every('1 day', 'update market data', {skipImmediate: true})
-  await runTask(dbs)({ touch: () => {} }, () => {
-    marketLogDebug('finished initial run through')
-  })
+  if (!NO_JOB) {
+    marketLogDebug('starting initial run through')
+    await runTask(dbs)({ touch: () => {} }, () => {
+      marketLogDebug('finished initial run through')
+    })
+  }
 }
 
 function runTask(dbs) {
