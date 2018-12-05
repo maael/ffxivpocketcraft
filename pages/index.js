@@ -261,20 +261,18 @@ class Index extends React.Component {
       const sortFn = (a, b) => {
         return b.markets[settings.server].lowest.normal - a.markets[settings.server].lowest.normal;
       }
-      const parts = arr.reduce((pre, cur) => {
-        let key = 'completion';
-        try {
-          (a.markets
-            && a.markets[settings.server]
-            && a.markets[settings.server].lowest
-            && a.markets[settings.server].lowest.normal
-          );
-          key = 'markets'
-        } catch (e) {}
-        pre[key].push(cur);
-        return pre;
-      }, { markets: [], completion: [] });
-      return parts.markets.sort(sortFn).concat(parts.completion.sort((a, b) => b.completion - a.completion))
+      return arr
+        .filter((a) =>
+          a.markets &&
+          a.markets[settings.server] &&
+          a.markets[settings.server].lowest &&
+          a.markets[settings.server].lowest.normal
+        ).sort(sortFn).concat(arr.filter((a) =>
+          !a.markets ||
+          !a.markets[settings.server] ||
+          !a.markets[settings.server].lowest ||
+          !a.markets[settings.server].lowest.normal
+        ).sort((a, b) => b.completion - a.completion))
     } else {
       const sortFn = (a, b) => {
         const completionDiff = b.completion - a.completion;
