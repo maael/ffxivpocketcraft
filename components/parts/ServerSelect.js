@@ -16,11 +16,11 @@ export default class ServerSelect extends React.Component {
 
   render() {
     const { loaded, servers } = this.state
-    console.log('the fuck')
     return (
       <SettingsContext.Consumer>
         {({ settings, updateSettings }) => (
           <select value={settings.server} onChange={({target}) => updateSettings({ server: target.value })}>
+            <option></option>
             {loaded ? Object.keys(servers).map((dataCenter) => (
               <optgroup key={dataCenter} label={dataCenter}>
                 {servers[dataCenter].map((server) => (

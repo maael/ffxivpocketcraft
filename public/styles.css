@@ -42,7 +42,8 @@ body.dark input::placeholder,
 body.dark .doh-tags .tags .tag:first-child,
 body.dark .filter-tags .tags .tag:first-child,
 body.dark .complete-check .tag:first-child,
-body.dark .sort-select .tag:first-child {
+body.dark .sort-select .tag:first-child,
+body.dark .server-select .tag:first-child {
   background-color: #12355B;
   border: none;
   color: #DCDCDC;
@@ -52,7 +53,9 @@ body.dark .doh-tags .tags .tag:last-child,
 body.dark .filter-tags .tags .tag:last-child,
 body.dark .complete-check .tag:last-child,
 body.dark .sort-select .tag:last-child,
-body.dark .sort-select .tag:last-child select {
+body.dark .sort-select .tag:last-child select,
+body.dark .server-select .tag:last-child,
+body.dark .server-select .tag:last-child select {
   background-color: #194A7F;
   color: #DCDCDC;
 }
@@ -243,17 +246,31 @@ body.dark .filter-tags .tags .tag.number-tag input::placeholder {
   bottom: 4px;
 }
 
-.sort-select {
+.server-select {
   display: inline-block;
   position: relative;
   left: 20px;
   bottom: 4px
 }
 
+.sort-select {
+  display: inline-block;
+  position: relative;
+  left: 30px;
+  bottom: 4px
+}
+
+.sort-select select,
+.server-select select {
+  border: none;
+  height: 100%;
+  width: 100%;
+}
+
 .refresh {
   display: inline-block;
   position: relative;
-  left: 35px;
+  left: 40px;
   bottom: 1px;
   cursor: pointer;
 }

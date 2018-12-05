@@ -19,6 +19,7 @@ import CheckTag from '../components/parts/CheckTag'
 import SettingsContext from '../components/contexts/Settings'
 import Translation from '../components/parts/Translation'
 import SortTag from '../components/parts/SortTag'
+import ServerTag from '../components/parts/ServerTag'
 
 const { publicRuntimeConfig: config } = getConfig()
 
@@ -164,7 +165,7 @@ class Index extends React.Component {
       })
   }
 
-  autoCompleteOnSelect (itemsSearch, item) {
+  autoCompleteOnSelect (_, item) {
     const { selectedItems } = this.state
     if (selectedItems.some((selected) => selected.id === item.id)) return this.setState({ itemsSearch: '', items: [] })
     this.setState({ selectedItems: selectedItems.concat(item), itemsSearch: '', items: [] }, this.getSuggestions)
@@ -260,18 +261,20 @@ class Index extends React.Component {
       const sortFn = (a, b) => {
         return b.markets[settings.server].lowest.normal - a.markets[settings.server].lowest.normal;
       }
-      return arr
-        .filter((a) =>
-          a.markets &&
-          a.markets[settings.server] &&
-          a.markets[settings.server].lowest &&
-          a.markets[settings.server].lowest.normal
-        ).sort(sortFn).concat(arr.filter((a) =>
-          !a.markets ||
-          !a.markets[settings.server] ||
-          !a.markets[settings.server].lowest ||
-          !a.markets[settings.server].lowest.normal
-        ).sort((a, b) => b.completion - a.completion))
+      const parts = arr.reduce((pre, cur) => {
+        let key = 'completion';
+        try {
+          (a.markets
+            && a.markets[settings.server]
+            && a.markets[settings.server].lowest
+            && a.markets[settings.server].lowest.normal
+          );
+          key = 'markets'
+        } catch (e) {}
+        pre[key].push(cur);
+        return pre;
+      }, { markets: [], completion: [] });
+      return parts.markets.sort(sortFn).concat(parts.completion.sort((a, b) => b.completion - a.completion))
     } else {
       const sortFn = (a, b) => {
         const completionDiff = b.completion - a.completion;
@@ -287,7 +290,6 @@ class Index extends React.Component {
 
   refresh () {
     api.cache.clear(() => {
-      console.log('refreshing')
       this.getSuggestions()
     })
   }
@@ -340,6 +342,7 @@ class Index extends React.Component {
             <h1 className='is-size-3'>
               {finalSuggestions.length} Suggestions ({finalSuggestions.filter((item) => item.need.length === item.have.length).length} complete)
               <CheckTag label={<Translation msg='filterCompleteOnly' />} className='complete-check' checked={settings.completeOnly} onClick={this.toggleCompleteOnly} />
+              <ServerTag label='Server' className='server-select' />
               <SortTag label='Sort by' className='sort-select' />
               {settings.server ? (
                 <div onClick={this.refresh} className='refresh' title='Refresh suggestions'>

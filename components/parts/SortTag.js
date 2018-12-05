@@ -10,7 +10,7 @@ export default ({ label = '', className = '', checked = false, onClick = () => {
               {label}
             </span>
             <span className='tag' style={{padding: 0}}>
-              <select value={settings.sort} onChange={({target}) => updateSettings({ sort: target.value })} style={{width: '100%', height: '100%', border: 'none'}}>
+              <select value={settings.sort} onChange={({target}) => updateSettings({ sort: target.value })}>
                 <option value="completion">Completion</option>
                 <option value="market">Market Price</option>
               </select>
