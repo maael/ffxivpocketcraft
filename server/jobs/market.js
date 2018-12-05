@@ -16,7 +16,9 @@ module.exports = async function start (dbs) {
   await agenda.every('1 day', 'update market data', {skipImmediate: true})
   if (!NO_JOB) {
     marketLogDebug('starting initial run through')
-    await runTask(dbs)({ touch: () => {} }, () => {
+    await runTask(dbs)({ touch: () => {
+      marketLogDebug('touching job')
+    } }, () => {
       marketLogDebug('finished initial run through')
     })
   }
@@ -48,7 +50,7 @@ function runTask(dbs) {
             if (pricing && pricing.Prices) {
               await Promise.all(LANGUAGES.split(',').filter(Boolean).map(async (lang) => {
                 const collect = dbs[lang].collection('recipes')
-                await collect.updateOne(
+                await collect.updateMany(
                   { id: data.id },
                   { $set: { [
                     `markets.${server}`]: {
