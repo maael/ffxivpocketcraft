@@ -250,6 +250,14 @@ body.dark .filter-tags .tags .tag.number-tag input::placeholder {
   bottom: 4px
 }
 
+.refresh {
+  display: inline-block;
+  position: relative;
+  left: 35px;
+  bottom: 1px;
+  cursor: pointer;
+}
+
 .notification.is-icon:hover,
 .notification.is-icon.is-active {
   background-color: #209CEE;

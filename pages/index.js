@@ -5,7 +5,7 @@ import localforage from 'localforage'
 import { setup } from 'axios-cache-adapter'
 import debounce from 'lodash.debounce'
 import ReactGA from 'react-ga'
-import { FaFilter } from 'react-icons/fa'
+import { FaFilter, FaSync } from 'react-icons/fa'
 import ItemCard from '../components/ItemCard'
 import Header from '../components/Header'
 import Head from '../components/Head'
@@ -96,6 +96,7 @@ class Index extends React.Component {
     this.toggleCompleteOnly = this.toggleCompleteOnly.bind(this)
     this.completeRefresh = this.completeRefresh.bind(this)
     this.getTooltips = this.getTooltips.bind(this)
+    this.refresh = this.refresh.bind(this)
   }
 
   componentDidMount () {
@@ -284,6 +285,13 @@ class Index extends React.Component {
     }
   }
 
+  refresh () {
+    api.cache.clear(() => {
+      console.log('refreshing')
+      this.getSuggestions()
+    })
+  }
+
   render () {
     const { items, itemsSearch, selectedItems, suggestions, userDOH, settings, recipeFilter, openFilter } = this.state
     const isDark = settings.mode === 'dark'
@@ -333,6 +341,11 @@ class Index extends React.Component {
               {finalSuggestions.length} Suggestions ({finalSuggestions.filter((item) => item.need.length === item.have.length).length} complete)
               <CheckTag label={<Translation msg='filterCompleteOnly' />} className='complete-check' checked={settings.completeOnly} onClick={this.toggleCompleteOnly} />
               <SortTag label='Sort by' className='sort-select' />
+              {settings.server ? (
+                <div onClick={this.refresh} className='refresh' title='Refresh suggestions'>
+                  <FaSync size='0.5em' />
+                </div>
+              ) : null}
             </h1>
             <div className='suggestions'>{finalSuggestions.map((item) => (
               <ItemCard server={settings.server} item={item} key={item._id} showClass showHave type='recipe' />
