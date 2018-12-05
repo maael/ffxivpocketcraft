@@ -35,7 +35,7 @@ function runTask(dbs) {
       marketDebug('collecting for servers', servers)
       marketDebug('excluding', EXCLUSIONS)
       const collection = dbs.en.collection('recipes')
-      const stream = collection.find({}, { projection: { 'item.id': 1 } }).stream()
+      const stream = collection.find({}, { projection: { 'item.id': 1, 'item.name': 1 } }).stream()
       stream.on('data', (data) => {
         servers.forEach((server) => {
           queue.add(async () => {
@@ -50,8 +50,9 @@ function runTask(dbs) {
             if (pricing && pricing.Prices) {
               await Promise.all(LANGUAGES.split(',').filter(Boolean).map(async (lang) => {
                 const collect = dbs[lang].collection('recipes')
+                marketDebug('updating', lang, data.item.id, data.item.name)
                 await collect.updateMany(
-                  { id: data.id },
+                  { id: data.item.id },
                   { $set: { [
                     `markets.${server}`]: {
                       prices: {
