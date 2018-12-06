@@ -3,7 +3,7 @@ const MongoClient = require('mongodb').MongoClient
 
 const languages = [ 'en', 'de', 'fr', 'ja' ]
 
-MongoClient.connect(MONGO_URI, function (err, client) {
+MongoClient.connect(MONGO_URI, { useNewUrlParser: true }, function (err, client) {
   if (err) throw err
   console.log('Connected successfully to server')
   handleLanguage(client).then(() => {
