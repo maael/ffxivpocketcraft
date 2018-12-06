@@ -10,7 +10,16 @@ export default class ServerSelect extends React.Component {
 
   componentDidMount() {
     axios.get('/api/xivapi/servers').then(({ data: servers }) => {
-      this.setState({ servers, loaded: true })
+      let cleanedServers = servers;
+      if (cleanedServers) {
+        cleanedServers = cleanedServers.reduce((pre, cur) => {
+          return {
+            ...pre,
+            [cur.dc]: pre[cur.dc] ? pre[cur.dc].concat(cur.server) : [cur.server]
+          }
+        }, {})
+      }
+      this.setState({ servers: cleanedServers, loaded: true })
     }).catch(console.error)
   }
 
