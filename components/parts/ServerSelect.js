@@ -15,7 +15,7 @@ export default class ServerSelect extends React.Component {
         cleanedServers = cleanedServers.reduce((pre, cur) => {
           return {
             ...pre,
-            [cur.dc]: pre[cur.dc] ? pre[cur.dc].concat(cur.server) : [cur.server]
+            [cur.dc]: pre[cur.dc] ? pre[cur.dc].concat(cur) : [cur]
           }
         }, {})
       }
@@ -32,8 +32,8 @@ export default class ServerSelect extends React.Component {
             <option></option>
             {loaded ? Object.keys(servers).map((dataCenter) => (
               <optgroup key={dataCenter} label={dataCenter}>
-                {servers[dataCenter].map((server) => (
-                  <option key={server}>{server}</option>
+                {servers[dataCenter].map(({server, enabled}) => (
+                  <option key={server} disabled={!enabled}>{server}</option>
                 ))}
               </optgroup>
             )) : <option disabled>Loading...</option>}
