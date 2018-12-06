@@ -52,7 +52,7 @@ function runTask(dbs) {
                 const collect = dbs[lang].collection('recipes')
                 marketDebug('updating', lang, data.item.id, data.item.name)
                 await collect.updateMany(
-                  { id: data.item.id },
+                  { 'item.id': data.item.id },
                   { $set: { [
                     `markets.${server}`]: {
                       prices: {
