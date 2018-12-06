@@ -7,5 +7,5 @@ const proxy = require('./proxy')
 module.exports = (dbs) => router
   .use('/items', items(dbs))
   .use('/recipes', recipes(dbs))
-  .use('/xivapi', xivapi)
+  .use('/xivapi', xivapi(dbs))
   .use('/proxy', proxy())
