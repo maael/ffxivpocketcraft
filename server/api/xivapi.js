@@ -8,7 +8,7 @@ module.exports = (dbs) => {
     const language = languageHelper(lang)
     const collection = dbs[language].collection('servers')
     try {
-      await collection.find().stream().pipe(JSONStream.stringify()).pipe(res.type('json'))
+      collection.find().stream().pipe(JSONStream.stringify()).pipe(res.type('json'))
     } catch (e) {
       console.error('ERROR', e)
       res.status(500).send({ e: e.message })
