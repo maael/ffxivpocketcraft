@@ -43,7 +43,7 @@ module.exports = (dbs) => {
       ), {})
       handleClassLevels(query, parsedClassLevels)
     }
-    const projection = { projection: { name: 1, id: 1, class_name: 1, tree: 1 } };
+    const projection = { projection: { name: 1, id: 1, class_name: 1, tree: 1, 'item.id': 1 } };
     if (server) {
       projection.projection[`markets.${server}.lowest`] = 1;
       projection.projection[`markets.${server}.lastUpdated`] = 1;
