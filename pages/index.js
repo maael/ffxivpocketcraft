@@ -134,8 +134,6 @@ class Index extends React.Component {
 
   getTooltips () {
     const { settings } = this.state
-    XIVDBTooltips.options.language = settings.language
-    XIVDBTooltips.get()
   }
 
   completeRefresh (cb) {
