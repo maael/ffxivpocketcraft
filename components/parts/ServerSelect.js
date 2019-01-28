@@ -9,7 +9,7 @@ export default class ServerSelect extends React.Component {
   }
 
   componentDidMount() {
-    if (Object.keys(this.state.servers) === 0) {
+    if (Object.keys(this.state.servers).length === 0) {
       axios.get('/api/xivapi/servers').then(({ data: servers }) => {
         let cleanedServers = servers;
         if (cleanedServers) {
