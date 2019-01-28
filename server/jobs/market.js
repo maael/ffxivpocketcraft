@@ -40,6 +40,10 @@ function runTask(dbs) {
         servers.forEach((server) => {
           queue.add(async () => {
             await job.touch()
+            if (!data.item || !data.item.id) {
+              marketErrorDebug('Missing item id for', data);
+              return;
+            }
             marketDebug('adding', data.item.id, 'for', server)
             let pricing
             try {
