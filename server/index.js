@@ -8,7 +8,6 @@ const next = require('next')({ dev: process.env.NODE_ENV !== 'production' })
 const api = require('./api')
 const fakePublic = require('./fake-public')
 const { languages } = require('./lib/helpers')
-const marketJob = require('./jobs/market');
 
 MongoClient.connect(MONGO_URI, { useNewUrlParser: true }, function (err, client) {
   if (err) throw err
@@ -17,7 +16,7 @@ MongoClient.connect(MONGO_URI, { useNewUrlParser: true }, function (err, client)
   next.prepare().then(() => {
     const server = express()
     const handleNextRequest = next.getRequestHandler()
-    marketJob(dbs);
+
     server
       .use(compression())
       .use(json())
