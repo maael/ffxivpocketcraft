@@ -14,7 +14,11 @@
     "build": "cross-env NODE_ENV=production next build",
     "db-dump": "mongodump --db pocketcraft",
     "db-restore": "mongorestore --drop -d pocketcraft",
-    "lint": "standard"
+    "lint": "standard",
+    "production:start": "pm2 start ecosystem.config.js --env production",
+    "production:stop": "pm2 stop ecosystem.config.js",
+    "production:logs:market": "pm2 logs pocketcraft-market",
+    "production:logs:server": "pm2 logs pocketcraft-production"
   },
   "engines": {
     "node": ">=9.11.1"
@@ -52,6 +56,7 @@
     "through2": "^3.0.0"
   },
   "devDependencies": {
+    "pm2": "^3.2.9",
     "standard": "^11.0.1"
   },
   "standard": {
