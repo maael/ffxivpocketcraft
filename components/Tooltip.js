@@ -1,12 +1,12 @@
 import Tippy from '@tippy.js/react'
 import 'tippy.js/dist/tippy.css'
 
-const TipContent = ({name, item, markets, server}) => (
+const TipContent = ({name/*, item, markets, server*/}) => (
   <div>
     <b>{name}</b>
-    <div>
+    {/* <div>
       <small>{server} {server && markets && markets[server] && markets[server].lowest.normal.toLocaleString()} gil @ {server && markets && markets[server] && markets[server].lastUpdated}</small>
-    </div>
+    </div> */}
   </div>
 )
 
