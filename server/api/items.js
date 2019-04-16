@@ -12,6 +12,15 @@ module.exports = (dbs) => {
     collection.find(query, { projection: { name: 1, id: 1, category_name: 1 } }).stream().pipe(JSONStream.stringify()).pipe(res.type('json'))
   })
 
+  router.get('/:id', async (req, res) => {
+    const { lang } = req.query
+    const { id } = req.params
+    const language = languageHelper(lang)
+    const collection = dbs[language].collection('recipes')
+    const item = await collection.findOne({id: Number(id)})
+    res.json(item)
+  })
+
   router.post('/retainer', (req, res) => {
     const { lang } = req.query
     const { potentials = [] } = req.body

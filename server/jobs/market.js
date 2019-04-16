@@ -1,8 +1,8 @@
-const { EXCLUDED_SERVERS, MONGO_URI, MONGO_DB, LANGUAGES, NO_JOB } = require('dotenv-extended').load()
 const Agenda = require('agenda')
 const Queue = require('p-queue')
 const xivapi = require('../lib/xivapi')
 const { debug } = require('../lib/helpers')
+const { EXCLUDED_SERVERS, MONGO_URI, MONGO_DB, LANGUAGES, NO_JOB } = process.env
 const queue = new Queue({ intervalCap: 10, interval: 6 * 1000 })
 const agenda = new Agenda({ db: {address: `${MONGO_URI}/${MONGO_DB}`} })
 const EXCLUSIONS = EXCLUDED_SERVERS.split(',')
@@ -35,6 +35,9 @@ function runTask(dbs) {
       marketDebug('collecting for servers', servers)
       marketDebug('excluding', EXCLUSIONS)
       const collection = dbs.en.collection('recipes')
+      const count = await collection.countDocuments()
+      let complete = 0
+      marketDebug('Streaming', count, 'recipes')
       const stream = collection.find({}, { projection: { 'item.id': 1, 'item.name': 1 } }).stream()
       stream.on('data', (data) => {
         servers.forEach((server) => {
@@ -81,7 +84,10 @@ function runTask(dbs) {
                     }
                   } }
                 )
+                marketDebug('updated', lang, data.item.id, data.item.name)
               }))
+              complete++;
+              marketDebug.extend('progress')(data.item.id, `${complete} of ${count * servers.length}`, `(${((complete/(count * servers.length)) * 100).toFixed(5)})%`)
             }
           })
         })

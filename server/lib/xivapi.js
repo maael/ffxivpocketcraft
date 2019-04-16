@@ -1,5 +1,6 @@
-const { XIVAPI_URL, XIVAPI_KEY } = require('dotenv-extended').load()
 const { setup } = require('axios-cache-adapter')
+
+const { XIVAPI_URL, XIVAPI_KEY } = process.env
 
 const api = setup({
   cache: {

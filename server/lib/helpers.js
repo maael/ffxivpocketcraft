@@ -1,5 +1,5 @@
-const { LANGUAGES } = require('dotenv-extended').load()
 const debug = require('debug')
+const {LANGUAGES} = process.env
 const languages = LANGUAGES.split(',')
 
 function languageHelper (lang) {
