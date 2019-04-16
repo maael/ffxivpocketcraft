@@ -18,8 +18,7 @@ import LodestoneLevels from '../components/parts/LodestoneLevels'
 import CheckTag from '../components/parts/CheckTag'
 import SettingsContext from '../components/contexts/Settings'
 import Translation from '../components/parts/Translation'
-import SortTag from '../components/parts/SortTag'
-import ServerTag from '../components/parts/ServerTag'
+import TeamcraftTag from '../components/parts/TeamcraftTag'
 
 const { publicRuntimeConfig: config } = getConfig()
 
@@ -303,6 +302,7 @@ class Index extends React.Component {
     const finalSuggestions = !settings.completeOnly ? embellishedSuggestions : embellishedSuggestions.filter((item) => (
       item.need.length === item.have.length
     ))
+    const teamcraftImportString = typeof window !== 'undefined' ? btoa(finalSuggestions.map(({item}) => `${item.id},null,1`).join(';')) : undefined;
     return (
       <SettingsContext.Provider value={{ settings, updateSettings: this.saveState('settings'), isDark: (settings) => settings.mode === 'dark' }}>
         <div>
@@ -338,8 +338,7 @@ class Index extends React.Component {
             <h1 className='is-size-3'>
               {finalSuggestions.length} Suggestions ({finalSuggestions.filter((item) => item.need.length === item.have.length).length} complete)
               <CheckTag label={<Translation msg='filterCompleteOnly' />} className='complete-check' checked={settings.completeOnly} onClick={this.toggleCompleteOnly} />
-              <ServerTag label='Server' className='server-select' />
-              <SortTag label='Sort by' className='sort-select' />
+              <TeamcraftTag link={`https://ffxivteamcraft.com/import/${teamcraftImportString}`} />
               {settings.server ? (
                 <div onClick={this.refresh} className='refresh' title='Refresh suggestions'>
                   <FaSync size='0.5em' />

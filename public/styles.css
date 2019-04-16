@@ -43,7 +43,8 @@ body.dark .doh-tags .tags .tag:first-child,
 body.dark .filter-tags .tags .tag:first-child,
 body.dark .complete-check .tag:first-child,
 body.dark .sort-select .tag:first-child,
-body.dark .server-select .tag:first-child {
+body.dark .server-select .tag:first-child,
+body.dark .teamcraft-tag .tag:first-child {
   background-color: #12355B;
   border: none;
   color: #DCDCDC;
@@ -55,7 +56,8 @@ body.dark .complete-check .tag:last-child,
 body.dark .sort-select .tag:last-child,
 body.dark .sort-select .tag:last-child select,
 body.dark .server-select .tag:last-child,
-body.dark .server-select .tag:last-child select {
+body.dark .server-select .tag:last-child select,
+body.dark .teamcraft-tag .tag:last-child {
   background-color: #194A7F;
   color: #DCDCDC;
 }
