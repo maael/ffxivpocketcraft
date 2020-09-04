@@ -43,7 +43,7 @@
     "express": "^4.16.3",
     "localforage": "^1.7.1",
     "lodash.debounce": "^4.0.8",
-    "mongodb": "^3.1.0-beta4",
+    "mongodb": "^3.1.13",
     "morgan": "^1.9.0",
     "next": "^7.0.2",
     "p-queue": "^3.0.0",
