@@ -40,7 +40,7 @@
     "date-fns": "^1.29.0",
     "debug": "^4.1.0",
     "dotenv-extended": "^2.0.2",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "localforage": "^1.7.1",
     "lodash.debounce": "^4.0.8",
     "mongodb": "^3.1.0-beta4",
